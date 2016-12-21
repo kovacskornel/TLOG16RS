@@ -14,8 +14,6 @@ import com.kovacskornel.tlog16rs.core.WorkMonth;
 import com.kovacskornel.tlog16rs.core.WorkDay;
 import com.kovacskornel.tlog16rs.core.Task;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
 import java.time.YearMonth;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

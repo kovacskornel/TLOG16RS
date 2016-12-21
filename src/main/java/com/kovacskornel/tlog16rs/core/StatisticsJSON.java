@@ -16,6 +16,8 @@ public class StatisticsJSON {
     @JsonProperty
     private String text = "";
     @JsonProperty
+    private String date = "";
+    @JsonProperty
     private TimeLogger tl;
     
     public StatisticsJSON(TimeLogger tl) {
@@ -37,7 +39,9 @@ public class StatisticsJSON {
         {
             
             WorkMonth WM = tl.getMonths().get(m);
-            text += (WM.getDate() + "\t\t\t\t\t\t" + WM.getExtraMinPerMonth()+"\n");
+            date = WM.getDate().toString();
+            
+            text += (date + "\n\t\t\t\t\t\t\t" + WM.getExtraMinPerMonth()+"\n");
             if(WM.getDays().isEmpty()) text += WM.getDate() + ": No days this month\n";
             else{            
             for(i=0;i<WM.getDays().size();i++)
