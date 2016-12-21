@@ -134,6 +134,7 @@ public class WorkDay{
 
             a = t.getStartTime();
             b = t.getEndTime();
+            if(t.getEndTime()== null) return true;
             for(j=0;j<tasks.size();j++)
             {
                     boolean after,before;

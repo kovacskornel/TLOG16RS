@@ -26,6 +26,7 @@ public class JsonDay {
     public JsonDay(int year ,int month,int day, TimeLogger tl ) {
         this.year = year;
         this.month = month;
+        this.day = day;
         this.tl = tl;
     }
 
@@ -47,16 +48,26 @@ public class JsonDay {
                 for(i=0;i<WM.getDays().size();i++)
                 {
                     WorkDay WD = WM.getDays().get(i);
-                    if(!WD.getTasks().isEmpty() && WD.getActualDay().getDayOfMonth() == day)
+                    if(WD.getActualDay().getDayOfMonth() == day)
                     {
-                    text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
-                    for (j=0;j<WD.getTasks().size();j++)
-                    {
-                        Task t = WD.getTasks().get(j);
-                        text+=(t.getMinPerTask() + "\t" + t.getTaskId() + "\t" + t.getComment() + "\t" + t.getEndTime()+"\n");
+                        if(!WD.getTasks().isEmpty())
+                        {
+                            text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
+                            for (j=0;j<WD.getTasks().size();j++)
+                            {
+                                Task t = WD.getTasks().get(j);
+                                if(t.getEndTime() != null)
+                                {
+
+                                
+                                text+=(t.getMinPerTask() + "\t" + t.getTaskId() + "\t" + t.getComment() + "\t" + t.getEndTime());
+
+                                } else text+= t.getTaskId() + ": Unfinished Task!";
+                                text+="\n";
+                            }
+                        }else text+= WD.getActualDay() + ": No tasks for this day";
+                    text+="\n";
                     }
-                    }else text+= WD.getActualDay() + ": No tasks for this day";
-                text+="\n";
                 }
         }
         text+="\n";

@@ -78,8 +78,7 @@ public  class Task{
         {
         x += (endTime.getHour()*60+endTime.getMinute())-(startTime.getHour()*60+startTime.getMinute());
         }
-        else if(endTime == null) throw new EmptyTimeFieldException("Empty end time!");
-        else if(endTime.getHour()*60+endTime.getMinute() > startTime.getHour()*60+startTime.getMinute()) throw new NotExpectedTimeOrderException();
+        else if(endTime!=null && endTime.getHour()*60+endTime.getMinute() > startTime.getHour()*60+startTime.getMinute()) throw new NotExpectedTimeOrderException();
         return x;
         
     }

@@ -37,7 +37,7 @@ public class StatisticsJSON {
         {
             
             WorkMonth WM = tl.getMonths().get(m);
-            text += ("\t\t\t\t\t" + WM.getExtraMinPerMonth()+"\n");
+            text += (WM.getDate() + "\t\t\t\t\t\t" + WM.getExtraMinPerMonth()+"\n");
             if(WM.getDays().isEmpty()) text += WM.getDate() + ": No days this month\n";
             else{            
             for(i=0;i<WM.getDays().size();i++)
@@ -46,12 +46,18 @@ public class StatisticsJSON {
                 if(WD.getTasks().isEmpty()) text+= WD.getActualDay() + ": No tasks for this day";
                 else
                 {
-                text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
-                for (j=0;j<WD.getTasks().size();j++)
-                {
-                    Task t = WD.getTasks().get(j);
-                    text+=(t.getMinPerTask() + "\t" + t.getTaskId() + "\t" + t.getComment() + "\t" + t.getEndTime()+"\n");
-                }
+                    text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getRequiredMinPerDay() + "\t\t\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
+                    for (j=0;j<WD.getTasks().size();j++)
+                    {
+                        Task t = WD.getTasks().get(j);
+                        if(t.getEndTime() != null)
+                        {
+                        
+                        
+                        text+=(t.getMinPerTask() + "\t" + t.getTaskId() + "\t" + t.getComment() + "\t" + t.getEndTime()+"\n");
+                        
+                        } else text+= t.getTaskId() + ": Unfinished Task!\n";
+                    }
                 }
            text+="\n";
             }

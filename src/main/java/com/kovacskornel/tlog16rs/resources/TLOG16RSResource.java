@@ -14,9 +14,12 @@ import com.kovacskornel.tlog16rs.core.WorkMonth;
 import com.kovacskornel.tlog16rs.core.WorkDay;
 import com.kovacskornel.tlog16rs.core.Task;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
 import java.time.YearMonth;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 
 
 @Path("/timelogger")
@@ -107,7 +110,6 @@ public class TLOG16RSResource {
     public String DayData(@PathParam(value = "year") int year, @PathParam(value="month") int month, @PathParam(value = "day") int day)
     {
         int m;
-        boolean exists = false, dexists = false;
         WorkMonth MYWM = null;
         WorkDay MYWD = null;
         if(!tl.getMonths().isEmpty())
@@ -140,5 +142,182 @@ public class TLOG16RSResource {
         return new JsonDay(year,month,day,tl).getText();
     }
     
+    @POST
+    @Path("/workmonths/workdays/tasks/start")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Task startTask(StartTaskRB task) {
+        int m;
+        WorkMonth MYWM = null;
+        WorkDay MYWD = null;
+        if(!tl.getMonths().isEmpty())
+        {
+            for(m=0;m<tl.getMonths().size();m++)
+            {   
+            WorkMonth WM = tl.getMonths().get(m);
+            if(WM.getDate().getYear() == task.getYear() && WM.getDate().getMonthValue() == task.getMonth()) MYWM = WM;
+            }
+        }
+        if(MYWM == null)
+        {
+            MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
+            tl.addMonth(MYWM);
+        }
+        if(!MYWM.getDays().isEmpty())
+        {
+            int d;
+            for(d=0;d<MYWM.getDays().size();d++)
+            {
+                WorkDay WD = MYWM.getDays().get(d);
+                if(WD.getActualDay().getDayOfMonth() == task.getDay()) MYWD = WD;
+            }
+        }
+        if(MYWD == null)
+        {
+            MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
+            MYWM.addWorkDay(MYWD);
+        }
+        Task MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        MYWD.addTask(MyTask);
+        return MyTask;
+    }
+    
+    @PUT
+    @Path("/workmonths/workdays/tasks/finish")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Task finishTask(FinishTaskRB task) {
+        int m;
+        WorkMonth MYWM = null;
+        WorkDay MYWD = null;
+        Task MyTask = null;
+        if(!tl.getMonths().isEmpty())
+        {
+            for(m=0;m<tl.getMonths().size();m++)
+            {   
+            WorkMonth WM = tl.getMonths().get(m);
+            if(WM.getDate().getYear() == task.getYear() && WM.getDate().getMonthValue() == task.getMonth()) MYWM = WM;
+            }
+        }
+        if(MYWM == null)
+        {
+            MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
+            tl.addMonth(MYWM);
+        }
+        if(!MYWM.getDays().isEmpty())
+        {
+            int d;
+            for(d=0;d<MYWM.getDays().size();d++)
+            {
+                WorkDay WD = MYWM.getDays().get(d);
+                if(WD.getActualDay().getDayOfMonth() == task.getDay()) MYWD = WD;
+            }
+        }
+        if(MYWD == null)
+        {
+            MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
+            MYWM.addWorkDay(MYWD);
+        }
+        if(!MYWD.getTasks().isEmpty())
+        {
+            int t;
+            for(t=0;t<MYWD.getTasks().size();t++)
+            {
+                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
+            }
+        }
+        if(MyTask == null) MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        MyTask.setEndTime(task.getEndTime());
+        return MyTask;
+    }
+    
+    @PUT
+    @Path("/workmonths/workdays/tasks/modify")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Task modifyTask(ModifyTaskRB task) {
+        int m;
+        WorkMonth MYWM = null;
+        WorkDay MYWD = null;
+        Task MyTask = null;
+        if(!tl.getMonths().isEmpty())
+        {
+            for(m=0;m<tl.getMonths().size();m++)
+            {   
+            WorkMonth WM = tl.getMonths().get(m);
+            if(WM.getDate().getYear() == task.getYear() && WM.getDate().getMonthValue() == task.getMonth()) MYWM = WM;
+            }
+        }
+        if(MYWM == null)
+        {
+            MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
+            tl.addMonth(MYWM);
+        }
+        if(!MYWM.getDays().isEmpty())
+        {
+            int d;
+            for(d=0;d<MYWM.getDays().size();d++)
+            {
+                WorkDay WD = MYWM.getDays().get(d);
+                if(WD.getActualDay().getDayOfMonth() == task.getDay()) MYWD = WD;
+            }
+        }
+        if(MYWD == null)
+        {
+            MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
+            MYWM.addWorkDay(MYWD);
+        }
+        if(!MYWD.getTasks().isEmpty())
+        {
+            int t;
+            for(t=0;t<MYWD.getTasks().size();t++)
+            {
+                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
+            }
+        }
+        if(MyTask == null) MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        MyTask.setComment(task.getNewComment());
+        MyTask.setEndTime(task.getNewEndTime());
+        MyTask.setStartTime(task.getNewStartTime());
+        MyTask.setTaskId(task.getNewTaskId());
+        return MyTask;
+        }
+    
+    @PUT
+    @Path("/workmonths/workdays/tasks/delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Task deleteTask(DeleteTaskRB task) {
+        Task delTask=null;
+            int m;
+            WorkMonth MYWM = null;
+            WorkDay MYWD = null;
+            if(!tl.getMonths().isEmpty())
+            {
+                for(m=0;m<tl.getMonths().size();m++)
+                {   
+                WorkMonth WM = tl.getMonths().get(m);
+                if(WM.getDate().getYear() == task.getYear() && WM.getDate().getMonthValue() == task.getMonth()) MYWM = WM;
+                }
+            }
+            else return delTask;
+            if(!MYWM.getDays().isEmpty())
+            {
+                int d;
+                for(d=0;d<MYWM.getDays().size();d++)
+                {
+                    WorkDay WD = MYWM.getDays().get(d);
+                    if(WD.getActualDay().getDayOfMonth() == task.getDay()) MYWD = WD;
+                }
+            }
+            else return delTask;
+            int t;
+            for(t=0;t<MYWD.getTasks().size();t++)
+            {
+                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) delTask = MYWD.getTasks().get(t);
+            }
+            MYWD.getTasks().remove(delTask);
+            return delTask;
+    }
     
 }

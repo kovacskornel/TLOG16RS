@@ -52,19 +52,27 @@ public class JsonMonth {
                     WorkDay WD = WM.getDays().get(i);
                     if(!WD.getTasks().isEmpty())
                     {
-                    text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
+                        text+=(WD.getActualDay() + "\t" + WD.getSumPerDay() + "\t" + WD.getTasks().get(0).getStartTime() + "\t" + WD.getExtraMinPerDay()+"\n");
                     for (j=0;j<WD.getTasks().size();j++)
                     {
                         Task t = WD.getTasks().get(j);
+                        if(t.getEndTime() != null)
+                        {
+                        
+                        
                         text+=(t.getMinPerTask() + "\t" + t.getTaskId() + "\t" + t.getComment() + "\t" + t.getEndTime()+"\n");
+                        
+                        } else text+= t.getTaskId() + ": Unfinished Task!";
+                        text+="\n";
                     }
                     }else text+= WD.getActualDay() + ": No tasks for this day";
-                text+="\n";
+                
                 }
             }else text+= WM.getDate() + ": No days this month\n";
+            text+="\n";
         }
 
-        text+="\n";
+        
         }
          
         }
