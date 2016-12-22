@@ -1,20 +1,18 @@
 package com.kovacskornel.tlog16rs.resources;
 
-import com.kovacskornel.tlog16rs.core.JsonDay;
-import com.kovacskornel.tlog16rs.core.JsonMonth;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.kovacskornel.tlog16rs.core.StatisticsJSON;
 import com.kovacskornel.tlog16rs.core.TimeLogger;
 import com.kovacskornel.tlog16rs.core.WorkMonth;
 import com.kovacskornel.tlog16rs.core.WorkDay;
 import com.kovacskornel.tlog16rs.core.Task;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -28,9 +26,9 @@ public class TLOG16RSResource {
     @Path ("/workmonths")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getStatistics()
+    public List getStatistics()
     {
-        return new StatisticsJSON(tl).getStat();
+        return tl.getMonths();
     }
 
     /**
@@ -57,25 +55,34 @@ public class TLOG16RSResource {
     @Path("/workmonths/{year}/{month}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String MonthData(@PathParam(value = "year") int year, @PathParam(value="month") int month)
+    public List MonthData(@PathParam(value = "year") int year, @PathParam(value="month") int month)
     {
         int m;
-        boolean exists = false;
+        WorkMonth MYWM = null;
         if(!tl.getMonths().isEmpty())
         {
             for(m=0;m<tl.getMonths().size();m++)
             {   
             WorkMonth WM = tl.getMonths().get(m);
-            if(WM.getDate().getYear() == year && WM.getDate().getMonthValue() == month) exists = true;
+            if(WM.getDate().getYear() == year && WM.getDate().getMonthValue() == month) MYWM = WM;
             }
         }
-        if(exists == false)
+        if(MYWM == null)
         {
-            WorkMonth MYWM = new WorkMonth(YearMonth.of(year, month));
+            MYWM = new WorkMonth(YearMonth.of(year, month));
             tl.addMonth(MYWM);
         }
-        return new JsonMonth(year,month,tl).getText();
+        return MYWM.getDays();
     }
+    
+    @PUT
+    @Path("/workmonths/deleteall")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void delAll()
+    {
+        tl.getMonths().clear();
+    }
+
     
     @POST
     @Path("/workmonths/workdays")
@@ -105,7 +112,7 @@ public class TLOG16RSResource {
     @Path("/workmonths/{year}/{month}/{day}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String DayData(@PathParam(value = "year") int year, @PathParam(value="month") int month, @PathParam(value = "day") int day)
+    public List DayData(@PathParam(value = "year") int year, @PathParam(value="month") int month, @PathParam(value = "day") int day)
     {
         int m;
         WorkMonth MYWM = null;
@@ -137,7 +144,7 @@ public class TLOG16RSResource {
             MYWD = new WorkDay(LocalDate.of(year,month,day));
             MYWM.addWorkDay(MYWD);
         }
-        return new JsonDay(year,month,day,tl).getText();
+        return MYWD.getTasks();
     }
     
     @POST
@@ -224,7 +231,11 @@ public class TLOG16RSResource {
                 if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
             }
         }
-        if(MyTask == null) MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        if(MyTask == null)
+        {
+            MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+            MYWD.addTask(MyTask);
+        }
         MyTask.setEndTime(task.getEndTime());
         return MyTask;
     }
@@ -273,7 +284,10 @@ public class TLOG16RSResource {
                 if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
             }
         }
-        if(MyTask == null) MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        if(MyTask == null){
+            MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+            MYWD.addTask(MyTask);
+        }
         MyTask.setComment(task.getNewComment());
         MyTask.setEndTime(task.getNewEndTime());
         MyTask.setStartTime(task.getNewStartTime());
