@@ -15,7 +15,7 @@ public class TLOG16RSApplication extends Application<TLOG16RSConfiguration> {
     public String getName() {
         return "TLOG16RS";
     }
-
+    
     @Override
     public void initialize(final Bootstrap<TLOG16RSConfiguration> bootstrap) {
         // TODO: application initialization

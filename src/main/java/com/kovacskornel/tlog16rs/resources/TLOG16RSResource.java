@@ -1,5 +1,7 @@
 package com.kovacskornel.tlog16rs.resources;
 
+import com.avaje.ebean.Ebean;
+import com.kovacskornel.tlog16rs.CreateDatabase;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,6 +18,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import org.avaje.agentloader.AgentLoader;
 
 
 @Path("/timelogger")
@@ -23,6 +26,7 @@ public class TLOG16RSResource {
     
     private final TimeLogger tl = new TimeLogger();
     
+
     @Path ("/workmonths")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +56,7 @@ public class TLOG16RSResource {
         }
     }
     
+	
     @Path("/workmonths/{year}/{month}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,6 +151,21 @@ public class TLOG16RSResource {
         }
         return MYWD.getTasks();
     }
+    
+
+    
+    @POST
+    @Path("/save/test")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String test(String text)
+    {
+        CreateDatabase database = new CreateDatabase();
+        TestEntity test = new TestEntity();
+        test.setText(text);
+        database.ebeanServer.save(test);
+        return text;
+    } 
     
     @POST
     @Path("/workmonths/workdays/tasks/start")
