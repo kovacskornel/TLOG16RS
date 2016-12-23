@@ -1,6 +1,11 @@
 package com.kovacskornel.tlog16rs;
 
+import com.avaje.ebean.EbeanServer;
 import com.kovacskornel.tlog16rs.resources.TLOG16RSResource;
+import com.avaje.ebean.EbeanServer;
+import com.avaje.ebean.EbeanServerFactory;
+import com.avaje.ebean.config.DataSourceConfig;
+import com.avaje.ebean.config.ServerConfig;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -24,6 +29,9 @@ public class TLOG16RSApplication extends Application<TLOG16RSConfiguration> {
     @Override
     public void run(final TLOG16RSConfiguration configuration,
                     final Environment environment) {
+        final CreateDatabase database = new CreateDatabase(configuration);
+        final EbeanServer ebeanServer;
+        ebeanServer = database.getEbeanServer();
         environment.jersey().register(new TLOG16RSResource());
     }
 

@@ -18,7 +18,6 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import org.avaje.agentloader.AgentLoader;
 
 
 @Path("/timelogger")
@@ -152,7 +151,6 @@ public class TLOG16RSResource {
         return MYWD.getTasks();
     }
     
-
     
     @POST
     @Path("/save/test")
@@ -160,10 +158,10 @@ public class TLOG16RSResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String test(String text)
     {
-        CreateDatabase database = new CreateDatabase();
+
         TestEntity test = new TestEntity();
         test.setText(text);
-        database.ebeanServer.save(test);
+        Ebean.save(test);
         return text;
     } 
     

@@ -11,6 +11,14 @@ import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
 import org.avaje.agentloader.AgentLoader;
 import com.kovacskornel.tlog16rs.resources.TestEntity;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import liquibase.Contexts;
+import liquibase.Liquibase;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
+
 
 /**
  *
@@ -22,28 +30,37 @@ import com.kovacskornel.tlog16rs.resources.TestEntity;
 public class CreateDatabase {
 
     
-    private DataSourceConfig dataSourceConfig;
-	private ServerConfig serverConfig;
-    public EbeanServer ebeanServer;
+    private final DataSourceConfig dataSourceConfig;
+	private final ServerConfig serverConfig;
+    private EbeanServer ebeanServer;
     
-    
-    
-    public CreateDatabase()
+    public CreateDatabase(TLOG16RSConfiguration config)
     {
+        try {updateSchema(config);}
+        catch (LiquibaseException | SQLException | ClassNotFoundException a)
+        {
+            System.out.println(a.getMessage());
+        }
         agentLoader();
         dataSourceConfig = new DataSourceConfig();
-        dataSourceConfig.setDriver("org.mariadb.jdbc.Driver");
-        dataSourceConfig.setUrl("jdbc:mariadb://127.0.0.1:9005/timelogger");
-        dataSourceConfig.setUsername("timelogger");
-        dataSourceConfig.setPassword("633Ym2aZ5b9Wtzh4EJc4pANx");
+        dataSourceConfig.setDriver(config.getDbDriver());
+        dataSourceConfig.setUrl(config.getDbUrl());
+        dataSourceConfig.setUsername(config.getDbUsername());
+        dataSourceConfig.setPassword(config.getDbPassword());
         serverConfig = new ServerConfig();
-        serverConfig.setName("timelogger");
+        serverConfig.setName(config.getDbName());
         serverConfig.setDdlGenerate(true);
         serverConfig.setDdlRun(true);
-        serverConfig.setRegister(false);
+        serverConfig.setDefaultServer(true);
+        serverConfig.setRegister(true);
         serverConfig.setDataSourceConfig(dataSourceConfig);
         serverConfig.addClass(TestEntity.class);  
         ebeanServer = EbeanServerFactory.create(serverConfig);
+    }
+    private void updateSchema(TLOG16RSConfiguration config) throws LiquibaseException, SQLException, ClassNotFoundException{
+		Liquibase liquibase;
+        liquibase = new Liquibase("migrations.xml",new ClassLoaderResourceAccessor(),new JdbcConnection(DriverManager.getConnection(config.getDbDriver(),config.getDbUsername(),config.getDbPassword())));
+		liquibase.update(new Contexts());
     }
     
     private void agentLoader() {
