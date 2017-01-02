@@ -17,13 +17,25 @@
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group name="akalman-LT">
-        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/TLOG16RSConfiguration.java</file>
-        <file>file:/home/precognox/TLOG16RS/settings.gradle</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/core/NotTheSameMonthException.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkMonthRB.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/ModifyTaskRB.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkMonth.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/test/java/test/TaskTest.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkDay.java</file>
         <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/TLOG16RSApplication.java</file>
-        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TestEntity.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/Task.java</file>
         <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TLOG16RSResource.java</file>
-        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/CreateDatabase.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/test/java/test/TimeLoggerTest.java</file>
         <file>file:/home/precognox/TLOG16RS/build.gradle</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/TLOG16RSConfiguration.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/test/java/test/WorkMonthTest.java</file>
+        <file>file:/home/precognox/TLOG16RS/settings.gradle</file>
+        <file>file:/home/precognox/TLOG16RS/src/test/java/test/WorkDayTest.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TimeLogger.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkDayRB.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/CreateDatabase.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/StartTaskRB.java</file>
       </group>
     </open-files>
   </auxiliary>

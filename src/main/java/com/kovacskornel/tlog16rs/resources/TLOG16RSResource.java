@@ -8,7 +8,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -18,15 +20,14 @@ import javax.ws.rs.PUT;
 @Path("/timelogger")
 public class TLOG16RSResource {    
     
-    private final TimeLogger tl = new TimeLogger();
-    
-
+    private TimeLogger tl = Ebean.find(TimeLogger.class).findUnique();
+       
     @Path ("/workmonths")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List getStatistics()
     {
-        return tl.getMonths();
+        return tl.getMonths(); 
     }
 
     /**
@@ -39,15 +40,10 @@ public class TLOG16RSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public WorkMonth addNewMonth(WorkMonthRB month) {
-        try{
         WorkMonth workMonth = new WorkMonth(month.getYear(), month.getMonth());
         tl.addMonth(workMonth);
+        Ebean.save(tl);
         return workMonth;
-        }
-        catch(Exception a){
-            System.out.println(a.getMessage());
-            return new WorkMonth(month.getYear(), month.getMonth());
-        }
     }
     
 	
@@ -70,7 +66,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(year, month));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            Ebean.save(tl);
         }
         return MYWM.getDays();
     }
@@ -81,6 +77,7 @@ public class TLOG16RSResource {
     public void delAll()
     {
         tl.getMonths().clear();
+        Ebean.save(tl);
     }
 
     
@@ -88,7 +85,7 @@ public class TLOG16RSResource {
     @Path("/workmonths/workdays")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public WorkDayRB addNewDay(WorkDayRB day) {
+    public WorkDay addNewDay(WorkDayRB day) {
         int m;
         WorkMonth MYWM = null;
         if(!tl.getMonths().isEmpty())
@@ -96,19 +93,26 @@ public class TLOG16RSResource {
             for(m=0;m<tl.getMonths().size();m++)
             {   
             WorkMonth WM = tl.getMonths().get(m);
-            if(WM.getDate().getYear() == day.getYear() && WM.getDate().getMonthValue() == day.getMonth()) MYWM = WM;
+            if(day.getYear() == WM.getDate().getYear() && day.getMonth() == WM.getDate().getMonthValue())
+            {
+                MYWM = WM;
+            
+            System.out.println("Found month! " + WM.getSDate() + WM.getDate());
+            }
             }
         }
         if(MYWM == null)
         {
             MYWM = new WorkMonth(YearMonth.of(day.getYear(), day.getMonth()));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            System.out.println("Month not found but created!");
         }
         WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()),day.getRequiredHours());
         MYWM.addWorkDay(wd);
-        Ebean.save(day);
-        return day;
+        System.out.println("Workday added to month!");
+        Ebean.save(tl);
+        System.out.println("Timelogger succesfully saved!");
+        return wd;
     }
  
     @Path("/workmonths/{year}/{month}/{day}")
@@ -131,7 +135,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(year, month));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            Ebean.save(tl);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -146,7 +150,7 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(year,month,day));
             MYWM.addWorkDay(MYWD);
-            Ebean.save(MYWD);
+            Ebean.save(tl);
         }
         return MYWD.getTasks();
     }
@@ -171,7 +175,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            Ebean.save(tl);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -186,11 +190,11 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
-            Ebean.save(MYWD);
+            Ebean.save(tl);
         }
         Task MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
         MYWD.addTask(MyTask);
-        Ebean.save(task);
+        Ebean.save(tl);
         return MyTask;
     }
     
@@ -215,7 +219,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            Ebean.save(tl);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -230,7 +234,7 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
-            Ebean.save(MYWD);
+            Ebean.save(tl);
         }
         if(!MYWD.getTasks().isEmpty())
         {
@@ -244,10 +248,9 @@ public class TLOG16RSResource {
         {
             MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
             MYWD.addTask(MyTask);
-            Ebean.save(MyTask);
         }
         MyTask.setEndTime(task.getEndTime());
-        Ebean.refresh(MyTask);
+        Ebean.save(tl);
         return MyTask;
     }
     
@@ -272,7 +275,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
-            Ebean.save(MYWM);
+            Ebean.save(tl);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -287,7 +290,7 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
-            Ebean.save(MYWD);
+            Ebean.save(tl);
         }
         if(!MYWD.getTasks().isEmpty())
         {
@@ -300,13 +303,12 @@ public class TLOG16RSResource {
         if(MyTask == null){
             MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
             MYWD.addTask(MyTask);
-            Ebean.save(MyTask);
         }
         MyTask.setComment(task.getNewComment());
         MyTask.setEndTime(task.getNewEndTime());
         MyTask.setStartTime(task.getNewStartTime());
         MyTask.setTaskId(task.getNewTaskId());
-        Ebean.save(MyTask);
+        Ebean.save(tl);
         return MyTask;
         }
     

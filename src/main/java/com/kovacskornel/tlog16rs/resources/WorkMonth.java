@@ -3,12 +3,9 @@ package com.kovacskornel.tlog16rs.resources;
 
 
 import com.kovacskornel.tlog16rs.core.NotNewDateException;
-import com.kovacskornel.tlog16rs.core.NotNewDateException;
-import com.kovacskornel.tlog16rs.core.NotTheSameMonthException;
 import com.kovacskornel.tlog16rs.core.NotTheSameMonthException;
 import com.kovacskornel.tlog16rs.core.WeekendNotEnabledException;
-import com.kovacskornel.tlog16rs.core.WeekendNotEnabledException;
-import java.time.Month;
+import static java.lang.Integer.parseInt;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,16 +29,16 @@ import javax.persistence.OneToMany;
 @lombok.Getter
 public class WorkMonth {
     @Id @GeneratedValue
-    private int id;
-    private int time_logger_id;
-    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    int id;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<WorkDay> days = new ArrayList<>();
-    YearMonth date;
+    private transient YearMonth date;
+    private String sdate;
     private long sumPerMonth;
     private long requiredMinPerMonth;
     private long extra_min_per_month;
     private boolean isWeekendEnabled = false;
-    
+   
     /**
      *
      * @param x A workday to check
@@ -149,15 +146,35 @@ public class WorkMonth {
      *
      * @return The date of this month
      */
-    public YearMonth getDate() {        
-        return date;
+    public String getSDate() {        
+        return sdate;
+    }
+    
+    public YearMonth getDate()
+    {
+        if(sdate != null && !"".equals(sdate))
+        return stringToYearMonth();
+        else return date;
     }
 
+    private YearMonth stringToYearMonth()
+    {
+        String mydate[];
+        mydate = sdate.split("-");
+        return YearMonth.of(parseInt(mydate[0]), parseInt(mydate[1]));
+    }
+    
     /**
      *
      * @param date The date of this month
      */
-    public void setDate(YearMonth date) {
+    public void setSDate(String date) {
+        this.sdate = date;
+    }
+    
+    public void setDate(YearMonth date)
+    {
+        this.sdate = date.toString();
         this.date = date;
     }
 
@@ -192,11 +209,13 @@ public class WorkMonth {
 
     public WorkMonth(YearMonth date) {
         this.date = date;
+        sdate = date.toString();
     }
     
     public WorkMonth(int year, int month)
     {
         date = YearMonth.of(year, month);
+        sdate = date.toString();
     }
     
     /**
@@ -206,6 +225,7 @@ public class WorkMonth {
      */
     public boolean isSameMonth(WorkDay wd)
     {
+        if(date == null) date = stringToYearMonth();
         return (wd.getActualDay().getMonth().equals(date.getMonth()) && wd.getActualDay().getYear() == date.getYear());
     }
     

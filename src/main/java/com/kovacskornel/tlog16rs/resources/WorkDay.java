@@ -2,10 +2,7 @@
 package com.kovacskornel.tlog16rs.resources;
 
 import com.kovacskornel.tlog16rs.core.FutureWorkException;
-import com.kovacskornel.tlog16rs.core.FutureWorkException;
 import com.kovacskornel.tlog16rs.core.NegativeMinutesOfWorkException;
-import com.kovacskornel.tlog16rs.core.NegativeMinutesOfWorkException;
-import com.kovacskornel.tlog16rs.core.NotSeparatedTimesException;
 import com.kovacskornel.tlog16rs.core.NotSeparatedTimesException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -33,7 +30,6 @@ public class WorkDay{
     private int id;
     @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Task> tasks = new ArrayList<>();
-    private int work_month_id;
     private long requiredMinPerDay=450;
     private long extra_min_per_day;
     private LocalDate actualDay;

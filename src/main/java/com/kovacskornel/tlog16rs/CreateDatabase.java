@@ -52,19 +52,21 @@ public class CreateDatabase {
         dataSourceConfig.setPassword(config.getDbPassword());
         serverConfig = new ServerConfig();
         serverConfig.setName(config.getDbName());
-        serverConfig.setDdlGenerate(true);
-        serverConfig.setDdlRun(true);
-        serverConfig.setDefaultServer(true);
+        serverConfig.setDdlGenerate(false);
+        serverConfig.setDdlRun(false);
         serverConfig.setRegister(true);
         serverConfig.setDataSourceConfig(dataSourceConfig);
         serverConfig.addClass(TimeLogger.class);  
         serverConfig.addClass(WorkDay.class);
         serverConfig.addClass(WorkMonth.class);
         serverConfig.addClass(Task.class);
+        serverConfig.setDefaultServer(true);
         ebeanServer = EbeanServerFactory.create(serverConfig);
     }
+    
     private void updateSchema(TLOG16RSConfiguration config) throws LiquibaseException, SQLException, ClassNotFoundException{
-		Liquibase liquibase;
+		Class.forName(config.getDbDriver());
+        Liquibase liquibase;
         liquibase = new Liquibase("migrations.xml",new ClassLoaderResourceAccessor(),new JdbcConnection(DriverManager.getConnection(config.getDbDriver(),config.getDbUsername(),config.getDbPassword())));
 		liquibase.update(new Contexts());
     }

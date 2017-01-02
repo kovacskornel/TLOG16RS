@@ -1,7 +1,6 @@
 package com.kovacskornel.tlog16rs.resources;
 
 import com.kovacskornel.tlog16rs.core.NotNewMonthException;
-import com.kovacskornel.tlog16rs.core.NotNewMonthException;
 import java.util.List;
 
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ public class TimeLogger{
     private int id;
     
     @lombok.Getter
-    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-    private final List<WorkMonth> months = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WorkMonth> months = new ArrayList();
     
     /**
      * Checks if the given working month exists
@@ -36,7 +35,7 @@ public class TimeLogger{
         boolean isnew = true;
         int i;
         for (i = 0; i < months.size(); i++) {
-            if (months.get(i).date.equals(wm.date)) {
+            if (months.get(i).getDate().equals(wm.getDate())) {
                 isnew = false;
                 break;
             }

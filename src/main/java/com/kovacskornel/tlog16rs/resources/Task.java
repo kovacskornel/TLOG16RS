@@ -5,22 +5,15 @@
  */
 package com.kovacskornel.tlog16rs.resources;
 import com.kovacskornel.tlog16rs.core.EmptyTimeFieldException;
-import com.kovacskornel.tlog16rs.core.EmptyTimeFieldException;
-import com.kovacskornel.tlog16rs.core.InvalidTaskIDException;
 import com.kovacskornel.tlog16rs.core.InvalidTaskIDException;
 import com.kovacskornel.tlog16rs.core.NegativeMinutesOfWorkException;
-import com.kovacskornel.tlog16rs.core.NegativeMinutesOfWorkException;
-import com.kovacskornel.tlog16rs.core.NoTaskIDException;
 import com.kovacskornel.tlog16rs.core.NoTaskIDException;
 import com.kovacskornel.tlog16rs.core.NotExpectedTimeOrderException;
-import com.kovacskornel.tlog16rs.core.NotExpectedTimeOrderException;
-import com.kovacskornel.tlog16rs.core.NotMultipleQuarterHourException;
 import com.kovacskornel.tlog16rs.core.NotMultipleQuarterHourException;
 import java.time.LocalTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -32,8 +25,7 @@ import javax.persistence.OneToMany;
 public class Task{
     
     @Id @GeneratedValue
-    private int id;
-    private int work_day_id;
+    int id;
     private String task_id;
     private LocalTime start_time;
     private LocalTime end_time;
