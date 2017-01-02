@@ -6,9 +6,9 @@
 package test;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import com.kovacskornel.tlog16rs.core.WorkMonth;
-import com.kovacskornel.tlog16rs.core.WorkDay;
-import com.kovacskornel.tlog16rs.core.Task;
+import com.kovacskornel.tlog16rs.resources.WorkMonth;
+import com.kovacskornel.tlog16rs.resources.WorkDay;
+import com.kovacskornel.tlog16rs.resources.Task;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import com.kovacskornel.tlog16rs.core.NotNewDateException;

@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import com.kovacskornel.tlog16rs.core.TimeLogger;
-import com.kovacskornel.tlog16rs.core.Task;
-import com.kovacskornel.tlog16rs.core.WorkDay;
-import com.kovacskornel.tlog16rs.core.WorkMonth;
+import com.kovacskornel.tlog16rs.resources.TimeLogger;
+import com.kovacskornel.tlog16rs.resources.Task;
+import com.kovacskornel.tlog16rs.resources.WorkDay;
+import com.kovacskornel.tlog16rs.resources.WorkMonth;
 import com.kovacskornel.tlog16rs.core.NotNewMonthException;
 /**
  * @author Kovács Kornél

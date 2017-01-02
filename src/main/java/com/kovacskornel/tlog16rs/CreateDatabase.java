@@ -9,8 +9,11 @@ import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.EbeanServerFactory;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
+import com.kovacskornel.tlog16rs.resources.Task;
+import com.kovacskornel.tlog16rs.resources.TimeLogger;
+import com.kovacskornel.tlog16rs.resources.WorkDay;
+import com.kovacskornel.tlog16rs.resources.WorkMonth;
 import org.avaje.agentloader.AgentLoader;
-import com.kovacskornel.tlog16rs.resources.TestEntity;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import liquibase.Contexts;
@@ -54,7 +57,10 @@ public class CreateDatabase {
         serverConfig.setDefaultServer(true);
         serverConfig.setRegister(true);
         serverConfig.setDataSourceConfig(dataSourceConfig);
-        serverConfig.addClass(TestEntity.class);  
+        serverConfig.addClass(TimeLogger.class);  
+        serverConfig.addClass(WorkDay.class);
+        serverConfig.addClass(WorkMonth.class);
+        serverConfig.addClass(Task.class);
         ebeanServer = EbeanServerFactory.create(serverConfig);
     }
     private void updateSchema(TLOG16RSConfiguration config) throws LiquibaseException, SQLException, ClassNotFoundException{

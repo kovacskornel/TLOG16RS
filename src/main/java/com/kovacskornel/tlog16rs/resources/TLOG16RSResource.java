@@ -1,17 +1,12 @@
 package com.kovacskornel.tlog16rs.resources;
 
 import com.avaje.ebean.Ebean;
-import com.kovacskornel.tlog16rs.CreateDatabase;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.kovacskornel.tlog16rs.core.TimeLogger;
-import com.kovacskornel.tlog16rs.core.WorkMonth;
-import com.kovacskornel.tlog16rs.core.WorkDay;
-import com.kovacskornel.tlog16rs.core.Task;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -75,6 +70,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(year, month));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         return MYWM.getDays();
     }
@@ -107,9 +103,11 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(day.getYear(), day.getMonth()));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()),day.getRequiredHours());
         MYWM.addWorkDay(wd);
+        Ebean.save(day);
         return day;
     }
  
@@ -133,6 +131,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(year, month));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -147,23 +146,10 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(year,month,day));
             MYWM.addWorkDay(MYWD);
+            Ebean.save(MYWD);
         }
         return MYWD.getTasks();
     }
-    
-    
-    @POST
-    @Path("/save/test")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String test(String text)
-    {
-
-        TestEntity test = new TestEntity();
-        test.setText(text);
-        Ebean.save(test);
-        return text;
-    } 
     
     @POST
     @Path("/workmonths/workdays/tasks/start")
@@ -185,6 +171,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -199,9 +186,11 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
+            Ebean.save(MYWD);
         }
         Task MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
         MYWD.addTask(MyTask);
+        Ebean.save(task);
         return MyTask;
     }
     
@@ -226,6 +215,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -240,21 +230,24 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
+            Ebean.save(MYWD);
         }
         if(!MYWD.getTasks().isEmpty())
         {
             int t;
             for(t=0;t<MYWD.getTasks().size();t++)
             {
-                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
+                if(MYWD.getTasks().get(t).getTask_id().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStart_time() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
             }
         }
         if(MyTask == null)
         {
             MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
             MYWD.addTask(MyTask);
+            Ebean.save(MyTask);
         }
         MyTask.setEndTime(task.getEndTime());
+        Ebean.refresh(MyTask);
         return MyTask;
     }
     
@@ -279,6 +272,7 @@ public class TLOG16RSResource {
         {
             MYWM = new WorkMonth(YearMonth.of(task.getYear(), task.getMonth()));
             tl.addMonth(MYWM);
+            Ebean.save(MYWM);
         }
         if(!MYWM.getDays().isEmpty())
         {
@@ -293,23 +287,26 @@ public class TLOG16RSResource {
         {
             MYWD = new WorkDay(LocalDate.of(task.getYear(),task.getMonth(),task.getDay()));
             MYWM.addWorkDay(MYWD);
+            Ebean.save(MYWD);
         }
         if(!MYWD.getTasks().isEmpty())
         {
             int t;
             for(t=0;t<MYWD.getTasks().size();t++)
             {
-                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
+                if(MYWD.getTasks().get(t).getTask_id().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStart_time() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) MyTask = MYWD.getTasks().get(t);
             }
         }
         if(MyTask == null){
             MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
             MYWD.addTask(MyTask);
+            Ebean.save(MyTask);
         }
         MyTask.setComment(task.getNewComment());
         MyTask.setEndTime(task.getNewEndTime());
         MyTask.setStartTime(task.getNewStartTime());
         MyTask.setTaskId(task.getNewTaskId());
+        Ebean.save(MyTask);
         return MyTask;
         }
     
@@ -344,9 +341,10 @@ public class TLOG16RSResource {
             int t;
             for(t=0;t<MYWD.getTasks().size();t++)
             {
-                if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) delTask = MYWD.getTasks().get(t);
+                if(MYWD.getTasks().get(t).getTask_id().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStart_time() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime())) delTask = MYWD.getTasks().get(t);
             }
             MYWD.getTasks().remove(delTask);
+            Ebean.delete(delTask);
             return delTask;
     }
     
