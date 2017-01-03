@@ -19,10 +19,9 @@ import javax.ws.rs.PUT;
 public class TLOG16RSResource {    
     
     static String myname = "test";
-
+    private TimeLogger tl = gettl();
     private TimeLogger gettl(){
         TimeLogger tilo= null;
-        int i;
         for (TimeLogger til : Ebean.find(TimeLogger.class).findList()) {
         if(til.getName().equals(myname))
         {
@@ -36,7 +35,7 @@ public class TLOG16RSResource {
         return tilo;
     }
     
-    TimeLogger tl = gettl();
+    
     
     private WorkMonth createMonthIfNotExists(int year, int month)
     {
@@ -46,10 +45,10 @@ public class TLOG16RSResource {
         {
             for(m=0;m<tl.getMonths().size();m++)
             {   
-            WorkMonth WM = tl.getMonths().get(m);
-            if(WM.getDate().getYear() == year && WM.getDate().getMonthValue() == month)
+            WorkMonth workMonth = tl.getMonths().get(m);
+            if(workMonth.getDate().getYear() == year && workMonth.getDate().getMonthValue() == month)
             {
-                wm = WM;
+                wm = workMonth;
             }
             }
         }
@@ -64,50 +63,50 @@ public class TLOG16RSResource {
     
     private WorkDay createDayIfNotExists(int year,int month, int day)
     {
-        WorkMonth MYWM = createMonthIfNotExists(year, month);
-        WorkDay MYWD = null;
-        if(!MYWM.getDays().isEmpty())
+        WorkMonth mywm = createMonthIfNotExists(year, month);
+        WorkDay mywd = null;
+        if(!mywm.getDays().isEmpty())
         {
             int d;
-            for(d=0;d<MYWM.getDays().size();d++)
+            for(d=0;d<mywm.getDays().size();d++)
             {
-                WorkDay WD = MYWM.getDays().get(d);
-                if(WD.getActualDay().getDayOfMonth() == day)
+                WorkDay wd = mywm.getDays().get(d);
+                if(wd.getActualDay().getDayOfMonth() == day)
                 {
-                    MYWD = WD;
+                    mywd = wd;
                 }
             }
         }
-        if(MYWD == null)
+        if(mywd == null)
         {
-            MYWD = new WorkDay(LocalDate.of(year,month,day));
-            MYWM.addWorkDay(MYWD);
+            mywd = new WorkDay(LocalDate.of(year,month,day));
+            mywm.addWorkDay(mywd);
             Ebean.save(tl);
         }
-        return MYWD;
+        return mywd;
     }
     
-    private Task CreateTaskIfNotExists(WorkDay MYWD, String taskid, String stime, String comment)
+    private Task createTaskIfNotExists(WorkDay mywd, String taskid, String stime, String comment)
     {
-        Task MyTask = null;
-        if(!MYWD.getTasks().isEmpty())
+        Task myTask = null;
+        if(!mywd.getTasks().isEmpty())
         {
             int t;
-            for(t=0;t<MYWD.getTasks().size();t++)
+            for(t=0;t<mywd.getTasks().size();t++)
             {
-                if(MYWD.getTasks().get(t).getTask_id().equals(taskid) && MYWD.getTasks().get(t).getStart_time() == MYWD.getTasks().get(t).stringToLocalTime(stime))
+                if(mywd.getTasks().get(t).getTaskId().equals(taskid) && mywd.getTasks().get(t).getStartTime() == mywd.getTasks().get(t).stringToLocalTime(stime))
                 {
-                    MyTask = MYWD.getTasks().get(t);
+                    myTask = mywd.getTasks().get(t);
                 }
             }
         }
-        if(MyTask == null)
+        if(myTask == null)
         {
-            MyTask = new Task(taskid,stime,comment);
-            MYWD.addTask(MyTask);
+            myTask = new Task(taskid,stime,comment);
+            mywd.addTask(myTask);
             Ebean.save(tl);
         }
-        return MyTask;
+        return myTask;
     }
     
     @Path ("/workmonths")
@@ -138,12 +137,11 @@ public class TLOG16RSResource {
     @Path("/workmonths/{year}/{month}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List MonthData(@PathParam(value = "year") int year, @PathParam(value="month") int month)
+    public List monthData(@PathParam(value = "year") int year, @PathParam(value="month") int month)
     {
-        int m;
-        WorkMonth MYWM;
-        MYWM = createMonthIfNotExists(year, month);
-        return MYWM.getDays();
+        WorkMonth mywm;
+        mywm = createMonthIfNotExists(year, month);
+        return mywm.getDays();
     }
     
     @PUT
@@ -162,11 +160,10 @@ public class TLOG16RSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public WorkDay addNewDay(WorkDayRB day) {
-        int m;
-        WorkMonth MYWM;
-        MYWM = createMonthIfNotExists(day.getYear(), day.getMonth());
+        WorkMonth mywm;
+        mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
         WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()),day.getRequiredHours());
-        MYWM.addWorkDay(wd);
+        mywm.addWorkDay(wd);
         Ebean.save(tl);
         return wd;
     }
@@ -174,10 +171,10 @@ public class TLOG16RSResource {
     @Path("/workmonths/{year}/{month}/{day}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List DayData(@PathParam(value = "year") int year, @PathParam(value="month") int month, @PathParam(value = "day") int day)
+    public List dayData(@PathParam(value = "year") int year, @PathParam(value="month") int month, @PathParam(value = "day") int day)
     {
-        WorkDay MYWD = createDayIfNotExists(year, month, day);
-        return MYWD.getTasks();
+        WorkDay mywd = createDayIfNotExists(year, month, day);
+        return mywd.getTasks();
     }
     
     @POST
@@ -185,11 +182,11 @@ public class TLOG16RSResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Task startTask(StartTaskRB task) {
-        WorkDay MYWD = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());        
-        Task MyTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
-        MYWD.addTask(MyTask);
+        WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());        
+        Task myTask = new Task(task.getTaskId(),task.getStartTime(),task.getComment());
+        mywd.addTask(myTask);
         Ebean.save(tl);
-        return MyTask;
+        return myTask;
     }
     
     @PUT
@@ -198,7 +195,7 @@ public class TLOG16RSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Task finishTask(FinishTaskRB task) {
         WorkDay MYWD = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());
-        Task MyTask = CreateTaskIfNotExists(MYWD,task.getTaskId(),task.getStartTime(),task.getComment());
+        Task MyTask = createTaskIfNotExists(MYWD,task.getTaskId(),task.getStartTime(),task.getComment());
         MyTask.setEndTime(task.getEndTime());
         Ebean.save(tl);
         return MyTask;
@@ -210,7 +207,7 @@ public class TLOG16RSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Task modifyTask(ModifyTaskRB task) {
         WorkDay MYWD = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());
-        Task MyTask = CreateTaskIfNotExists(MYWD, task.getTaskId(), task.getStartTime(), task.getNewComment()); 
+        Task MyTask = createTaskIfNotExists(MYWD, task.getTaskId(), task.getStartTime(), task.getNewComment()); 
         MyTask.setEndTime(task.getNewEndTime());
         MyTask.setStartTime(task.getNewStartTime());
         MyTask.setTaskId(task.getNewTaskId());
@@ -258,7 +255,6 @@ public class TLOG16RSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Task deleteTask(DeleteTaskRB task) {
         Task delTask=null;
-            int m;
             WorkMonth MYWM = isMonthExists(task.getYear(), task.getMonth());
             if(MYWM == null)
             {
@@ -275,7 +271,7 @@ public class TLOG16RSResource {
                 for(t=0;t<MYWD.getTasks().size();t++)
                 {
 
-                    if(MYWD.getTasks().get(t).getTask_id().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStart_time() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime()))
+                    if(MYWD.getTasks().get(t).getTaskId().equals(task.getTaskId()) && MYWD.getTasks().get(t).getStartTime() == MYWD.getTasks().get(t).stringToLocalTime(task.getStartTime()))
                     {
                         delTask = MYWD.getTasks().get(t);
                     }

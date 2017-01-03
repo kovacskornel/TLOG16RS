@@ -36,16 +36,27 @@ public class WorkMonth {
     private String sdate;
     private long sumPerMonth;
     private long requiredMinPerMonth;
-    private long extra_min_per_month;
+    private long extraMinPerMonth;
     private boolean isWeekendEnabled = false;
    
+    public WorkMonth(YearMonth date) {
+        this.date = date;
+        sdate = date.toString();
+    }
+    
+    public WorkMonth(int year, int month)
+    {
+        date = YearMonth.of(year, month);
+        sdate = date.toString();
+    }    
+    
     /**
      *
      * @param x A workday to check
      * @return boolean<br>true if the month not contains this workday
      * <br>false if the month already contains this workday
      */
-    public boolean IsNewDate(WorkDay x)
+    public boolean isNewDate(WorkDay x)
     {
         int i;
         boolean a=false;
@@ -97,23 +108,17 @@ public class WorkMonth {
      * @exception NotNewDateException if the {@link WorkDay} already exists
      */
     public void addWorkDay(WorkDay wd, boolean isWeekendEnabled) 
-    {
-    if(IsNewDate(wd))
-    {
-        if(isSameMonth(wd))
+    {    
+        if(isNewDate(wd))
         {
-            if (isWeekendEnabled == true) {
-            days.add(wd);
-            }
-                else if((!wd.isWeekDay(wd.getActualDay()))){
-                    throw new WeekendNotEnabledException();
+            if(isSameMonth(wd))
+            {
+                if (wd.isWeekDay(wd.getActualDay()) || isWeekendEnabled ) {
+                days.add(wd);
                 }
-                else if(wd.isWeekDay(wd.getActualDay()))
-                {
-                    days.add(wd);
-                }
-        }else throw new NotTheSameMonthException();
-    }else throw new NotNewDateException();
+                else throw new WeekendNotEnabledException();
+            }else throw new NotTheSameMonthException();
+        }else throw new NotNewDateException();
     }
     
     /**
@@ -165,8 +170,7 @@ public class WorkMonth {
 
     private YearMonth stringToYearMonth()
     {
-        String mydate[];
-        mydate = sdate.split("-");
+        String[] mydate = sdate.split("-");
         return YearMonth.of(parseInt(mydate[0]), parseInt(mydate[1]));
     }
     
@@ -212,17 +216,6 @@ public class WorkMonth {
         this.requiredMinPerMonth = rpm;
         return rpm;
     }
-
-    public WorkMonth(YearMonth date) {
-        this.date = date;
-        sdate = date.toString();
-    }
-    
-    public WorkMonth(int year, int month)
-    {
-        date = YearMonth.of(year, month);
-        sdate = date.toString();
-    }
     
     /**
      *
@@ -235,7 +228,7 @@ public class WorkMonth {
         {       
         date = stringToYearMonth();
         }
-        return (wd.getActualDay().getMonth().equals(date.getMonth()) && wd.getActualDay().getYear() == date.getYear());
+        return wd.getActualDay().getMonth().equals(date.getMonth()) && wd.getActualDay().getYear() == date.getYear();
     }
     
 }

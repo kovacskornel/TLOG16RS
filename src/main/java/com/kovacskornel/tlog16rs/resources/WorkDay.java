@@ -143,7 +143,7 @@ public class WorkDay{
         {
             return null;
         }
-        return tasks.get(tasks.size()-1).getEnd_time();
+        return tasks.get(tasks.size()-1).getEndTime();
     }
     
     public boolean isAfterBefore(LocalTime a, LocalTime b, LocalTime c, LocalTime d)
@@ -162,23 +162,23 @@ public class WorkDay{
      */
     public final boolean isSeparatedTime(Task t)
     {       
-        int i,j;
+        int j;
         LocalTime a,b,c,d;
         if(tasks.isEmpty())
         {
             return true;
         }
-            a = t.getStart_time();
-            b = t.getEnd_time();
-            if(t.getEnd_time()== null)
+            a = t.getStartTime();
+            b = t.getEndTime();
+            if(t.getEndTime()== null)
             {
                 return true;
             }
             for(j=0;j<tasks.size();j++)
             {
                     
-                    c = tasks.get(j).getStart_time();
-                    d = tasks.get(j).getEnd_time();
+                    c = tasks.get(j).getStartTime();
+                    d = tasks.get(j).getEndTime();
                     if(isAfterBefore(a,b,c,d)){
                         return false;
                     }

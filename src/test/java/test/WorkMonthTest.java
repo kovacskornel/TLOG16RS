@@ -173,7 +173,7 @@ public class WorkMonthTest {
         WorkDay wd2 = new WorkDay(LocalDate.of(2016, 9, 1));
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 9));
         wm.addWorkDay(wd);
-        assertEquals(wm.IsNewDate(wd2),false);
+        assertEquals(wm.isNewDate(wd2),false);
     }
     
     // Test 15
@@ -184,7 +184,7 @@ public class WorkMonthTest {
         WorkDay wd2 = new WorkDay(LocalDate.of(2016, 9, 2));
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 9));
         wm.addWorkDay(wd);
-        assertEquals(wm.IsNewDate(wd2),true);        
+        assertEquals(wm.isNewDate(wd2),true);        
     }
     
     // Test 16
@@ -193,7 +193,7 @@ public class WorkMonthTest {
     {
         WorkDay wd2 = new WorkDay(LocalDate.of(2016, 9, 2));
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 9));
-        assertEquals(wm.IsNewDate(wd2),true);       
+        assertEquals(wm.isNewDate(wd2),true);       
     }
     
     // Test 17

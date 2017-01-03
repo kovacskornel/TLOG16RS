@@ -22,7 +22,6 @@ import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import com.kovacskornel.tlog16rs.core.FailedToUpdateSchemaException;
 import java.util.function.Supplier;
 
 

@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class TimeLogger{
+    private static final Logger LOGGER = Logger.getLogger(TimeLogger.class.getName());
     @Id @GeneratedValue
     private int id;
     @lombok.Getter
@@ -52,7 +53,7 @@ public class TimeLogger{
         return isnew;
     }
     
-        private static final Logger LOGGER = Logger.getLogger(TimeLogger.class.getName());
+
 
     
     /**

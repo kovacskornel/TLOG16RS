@@ -83,7 +83,7 @@ public class TaskTest {
     @Test(expected = EmptyTimeFieldException.class)
     public void isEmptyTimeFieldTest()
     {
-        NoEndTime().getEnd_time();
+        NoEndTime().getEndTime();
     }
     // Test 3
     @Test
@@ -95,87 +95,87 @@ public class TaskTest {
     @Test
     public void isValidRedmineTask()
     {
-        assertEquals(validRedmineTask().isValidRedmineTaskId(validRedmineTask().getTask_id()),true);
+        assertEquals(validRedmineTask().isValidRedmineTaskId(validRedmineTask().getTaskId()),true);
     }
     // Test 5
     @Test(expected = InvalidTaskIDException.class)
     public void isInValidRedmineTask()
     {
-        InvalidRedmineTask().isValidRedmineTaskId(validRedmineTask().getTask_id());
+        InvalidRedmineTask().isValidRedmineTaskId(validRedmineTask().getTaskId());
     }
     // Test 6
     @Test(expected = NoTaskIDException.class)
     public void NoRedmineTaskIDtest()
     {
-        noTaskID().isValidRedmineTaskId(noTaskID().getTask_id());
+        noTaskID().isValidRedmineTaskId(noTaskID().getTaskId());
     }
     // Test 7
     @Test
     public void testIsValidTaskID()
     {
-        assertEquals(validLTTaskID().isValidLTTaskId(validLTTaskID().getTask_id()),true);
+        assertEquals(validLTTaskID().isValidLTTaskId(validLTTaskID().getTaskId()),true);
     }
     
     // Test 8
     @Test(expected = InvalidTaskIDException.class)
     public void testIsInvalidLTTaskID()
     {
-        InvalidLTTaskID().isValidLTTaskId(InvalidLTTaskID().getTask_id());
+        InvalidLTTaskID().isValidLTTaskId(InvalidLTTaskID().getTaskId());
     }
     
     // Test 9
     @Test(expected = NoTaskIDException.class)
     public void NoLTTaskIDtest()
     {
-        noTaskID().isValidLTTaskId(noTaskID().getTask_id());
+        noTaskID().isValidLTTaskId(noTaskID().getTaskId());
     }
     
     // Test 10
     @Test
     public void testIsValidTestID()
     {
-        validLTTaskID().isValidTaskID(validLTTaskID().getTask_id());
+        validLTTaskID().isValidTaskID(validLTTaskID().getTaskId());
     }
     
     // Test 11
     @Test(expected = InvalidTaskIDException.class)
     public void testIsInvalidTaskID()
     {
-        InvalidRedmineTask().isValidTaskID(InvalidRedmineTask().getTask_id());
+        InvalidRedmineTask().isValidTaskID(InvalidRedmineTask().getTaskId());
     }
     
     // Test 12
     @Test(expected = NoTaskIDException.class)
     public void NoTaskIDValidTask()
     {
-        noTaskID().isValidTaskID(noTaskID().getTask_id());
+        noTaskID().isValidTaskID(noTaskID().getTaskId());
     }
     
     // Test 13
     @Test
     public void testValidMultipleQuarter()
     {
-        assertEquals(getMinTaskGood().isMultipleQuarterHour(getMinTaskGood().getStart_time().getMinute()) && getMinTaskGood().isMultipleQuarterHour(getMinTaskGood().getEnd_time().getMinute()) ,true);          
+        assertEquals(getMinTaskGood().isMultipleQuarterHour(getMinTaskGood().getStartTime().getMinute()) && getMinTaskGood().isMultipleQuarterHour(getMinTaskGood().getEndTime().getMinute()) ,true);          
     }
     
     // Test 14
     @Test
 /*    public void testInvalidMultipleQuarter()
     {
-        assertEquals(notQuarterHour().isMultipleQuarterHour(notQuarterHour().getStart_time().getMinute()) && notQuarterHour().isMultipleQuarterHour(notQuarterHour().getEnd_time().getMinute()) ,false);       
+        assertEquals(notQuarterHour().isMultipleQuarterHour(notQuarterHour().getStartTime().getMinute()) && notQuarterHour().isMultipleQuarterHour(notQuarterHour().getEndTime().getMinute()) ,false);       
     }    
 */  (expected = NotMultipleQuarterHourException.class) 
     public void testInvalidMultipleQuarter()
     {
-        notQuarterHour().isMultipleQuarterHour(notQuarterHour().getStart_time().getMinute());
-        notQuarterHour().isMultipleQuarterHour(notQuarterHour().getEnd_time().getMinute());
+        notQuarterHour().isMultipleQuarterHour(notQuarterHour().getStartTime().getMinute());
+        notQuarterHour().isMultipleQuarterHour(notQuarterHour().getEndTime().getMinute());
     }
     
     // Test 15
     @Test(expected = NoTaskIDException.class)
-    public void NoTaskIDgetTask_id()
+    public void NoTaskIDgetTaskId()
     {
-        noTaskID().getTask_id();
+        noTaskID().getTaskId();
     }
     
     // Test 16   
