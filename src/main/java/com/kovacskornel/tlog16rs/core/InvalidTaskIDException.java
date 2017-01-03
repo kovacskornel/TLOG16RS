@@ -12,10 +12,11 @@ package com.kovacskornel.tlog16rs.core;
 public class InvalidTaskIDException extends RuntimeException {
 
     public InvalidTaskIDException() {
-        
+        //returns the exception
     }
 
     public InvalidTaskIDException(String string) {
+        
         super(string);
     }
     

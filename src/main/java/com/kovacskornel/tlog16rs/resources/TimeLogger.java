@@ -4,6 +4,7 @@ import com.kovacskornel.tlog16rs.core.NotNewMonthException;
 import java.util.List;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,11 +22,11 @@ public class TimeLogger{
     @Id @GeneratedValue
     private int id;
     @lombok.Getter
-    private String name;
+    private final String name;
     
     @lombok.Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<WorkMonth> months = new ArrayList();
+    private final List<WorkMonth> months = new ArrayList();
 
     public TimeLogger(String name) {
         this.name = name;
@@ -51,6 +52,9 @@ public class TimeLogger{
         return isnew;
     }
     
+        private static final Logger LOGGER = Logger.getLogger(TimeLogger.class.getName());
+
+    
     /**
      *Adds a month to the TimeLogger
      * @param wm Working month
@@ -59,9 +63,9 @@ public class TimeLogger{
     public void addMonth(WorkMonth wm) {
         if (isNewMonth(wm)) {
             if (months.add(wm)) {
-                System.out.println("Successfully added a WorkMonth");
+                LOGGER.info("Successfully added a WorkMonth");
             } else {   
-                System.out.println("Not added!");
+                LOGGER.info("Not added!");
             }
         } else {
             throw new NotNewMonthException();

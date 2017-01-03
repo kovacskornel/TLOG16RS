@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotNewDateException extends RuntimeException{
 
     public NotNewDateException() {
+        //returns the exception
     }
 
     public NotNewDateException(String message) {

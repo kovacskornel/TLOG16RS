@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotNewMonthException extends RuntimeException{
 
     public NotNewMonthException() {
+        //returns the exception
     }
 
     public NotNewMonthException(String message) {

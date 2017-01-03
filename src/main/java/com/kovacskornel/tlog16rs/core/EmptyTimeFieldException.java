@@ -16,5 +16,6 @@ public class EmptyTimeFieldException extends RuntimeException {
     }
     
     public EmptyTimeFieldException() {
+        //returns the exception
     }           
 }

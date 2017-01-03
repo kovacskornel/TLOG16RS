@@ -5,7 +5,6 @@
  */
 package com.kovacskornel.tlog16rs;
 
-import com.avaje.ebean.Ebean;
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.EbeanServerFactory;
 import com.avaje.ebean.config.DataSourceConfig;
@@ -17,11 +16,14 @@ import com.kovacskornel.tlog16rs.resources.WorkMonth;
 import org.avaje.agentloader.AgentLoader;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import com.kovacskornel.tlog16rs.core.FailedToUpdateSchemaException;
+import java.util.function.Supplier;
 
 
 /**
@@ -33,17 +35,22 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 @lombok.Setter
 public class CreateDatabase {
 
-    
+    private static final Logger LOGGER = Logger.getLogger(CreateDatabase.class.getName());
     private final DataSourceConfig dataSourceConfig;
 	private final ServerConfig serverConfig;
     private EbeanServer ebeanServer;
     
     public CreateDatabase(TLOG16RSConfiguration config)
     {
-        try {updateSchema(config);}
-        catch (LiquibaseException | SQLException | ClassNotFoundException a)
+        
+        try {
+            updateSchema(config);
+        }
+        catch (LiquibaseException |
+                SQLException |
+                ClassNotFoundException a)
         {
-            System.out.println(a.getMessage());
+            LOGGER.info((Supplier<String>) a);
         }
         agentLoader();
         dataSourceConfig = new DataSourceConfig();
@@ -74,7 +81,7 @@ public class CreateDatabase {
     
     private void agentLoader() {
         if (!AgentLoader.loadAgentFromClasspath("avaje-ebeanorm-agent", "debug=1;packages=com.kovacskornel.tlog16rs.**")) {
-        System.err.println("avaje-ebeanorm-agent not found in classpath - not dynamically loaded");
+        LOGGER.info("avaje-ebeanorm-agent not found in classpath - not dynamically loaded");
         }
-    }
+   }
 }

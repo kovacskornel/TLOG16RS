@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class WeekendNotEnabledException extends RuntimeException{
 
     public WeekendNotEnabledException() {
+        //returns the exception
     }
 
     public WeekendNotEnabledException(String message) {

@@ -47,6 +47,11 @@ create index ix_work_day_work_month_id on work_day (work_month_id);
 alter table work_month add constraint fk_work_month_time_logger_id foreign key (time_logger_id) references time_logger (id) on delete restrict on update restrict;
 create index ix_work_month_time_logger_id on work_month (time_logger_id);
 
-</sql>
+</changeSet>	
+<changeSet id="2" author="me">
+	<addColumn tableName="time_logger">
+		<column name="name" type="varchar(255)" />
+	</addcolumn>
 </changeSet>
+
 </databaseChangeLog>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test.WorkMonthTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2017-01-03T13:15:49" hostname="deb4precog" time="0.008">
+  <properties/>
+  <testcase name="getExtraTest" classname="test.WorkMonthTest" time="0.005"/>
+  <testcase name="getExtraTest2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="getSumTest1" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="getSumTest2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="getReqTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="getReqTest2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="sumTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="weekendTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="weekendTest2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isSameTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isSameMonth" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isSameMonth2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isSameMonth3" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isNewDateTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isNewDateTest2" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isNewDateTest3" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="inNewExcTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="isReqSumSameTest" classname="test.WorkMonthTest" time="0.0"/>
+  <testcase name="NotSameMonthTest" classname="test.WorkMonthTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

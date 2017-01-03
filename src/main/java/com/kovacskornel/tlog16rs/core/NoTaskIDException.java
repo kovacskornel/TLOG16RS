@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NoTaskIDException extends RuntimeException  {
 
     public NoTaskIDException() {
+        //returns the exception
     }
 
     public NoTaskIDException(String string) {

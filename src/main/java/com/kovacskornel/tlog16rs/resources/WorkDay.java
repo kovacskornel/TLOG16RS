@@ -52,7 +52,10 @@ public class WorkDay{
      */
     public final void setActualDay(LocalDate date)
     {
-        if(date.isAfter(LocalDate.now())) throw new FutureWorkException();
+        if(date.isAfter(LocalDate.now()))
+        {
+            throw new FutureWorkException();
+        }
         else actualDay = date;
     }
 
@@ -96,7 +99,10 @@ public class WorkDay{
         {
             tasks.add(t);
         }
-        else if(!isSeparatedTime(t)) throw new NotSeparatedTimesException();
+        else if(!isSeparatedTime(t))
+        {
+            throw new NotSeparatedTimesException();
+        }
         else tasks.add(t);
         
     }
@@ -114,8 +120,11 @@ public class WorkDay{
     public WorkDay(LocalDate date, long reqmin)
     {
        setActualDay(date);
-       if(reqmin < 0) throw new NegativeMinutesOfWorkException();
-       else requiredMinPerDay = reqmin;
+       if(reqmin < 0)
+       {
+           throw new NegativeMinutesOfWorkException();
+       }
+           else requiredMinPerDay = reqmin;
     }
     
     public WorkDay(LocalDate date)
@@ -130,8 +139,19 @@ public class WorkDay{
      */
     public LocalTime endTimeOfTheLastTask()
     {
-        if(tasks.isEmpty()) return null;
+        if(tasks.isEmpty())
+        {
+            return null;
+        }
         return tasks.get(tasks.size()-1).getEnd_time();
+    }
+    
+    public boolean isAfterBefore(LocalTime a, LocalTime b, LocalTime c, LocalTime d)
+    {
+        boolean after,before;
+        after = (a.isBefore(c) && a.isBefore(d)) ||( a.isAfter(c) && a.isAfter(d));
+        before = (b.isBefore(c) && b.isBefore(d)) || (b.isAfter(c) && b.isAfter(d));
+        return (!after || !before) && (!c.equals(b) && !d.equals(a));
     }
     
     /**
@@ -144,25 +164,26 @@ public class WorkDay{
     {       
         int i,j;
         LocalTime a,b,c,d;
-        if(tasks.isEmpty()) return true;
-
+        if(tasks.isEmpty())
+        {
+            return true;
+        }
             a = t.getStart_time();
             b = t.getEnd_time();
-            if(t.getEnd_time()== null) return true;
+            if(t.getEnd_time()== null)
+            {
+                return true;
+            }
             for(j=0;j<tasks.size();j++)
             {
-                    boolean after,before;
+                    
                     c = tasks.get(j).getStart_time();
                     d = tasks.get(j).getEnd_time();
-                    after = (a.isBefore(c) && a.isBefore(d)) ||( a.isAfter(c) && a.isAfter(d));
-                    before = (b.isBefore(c) && b.isBefore(d)) || (b.isAfter(c) && b.isAfter(d));
-                    if(!after || !before) {
-                        if(c.equals(b) || d.equals(a)){
-                        }else return false;
-                    } else {
+                    if(isAfterBefore(a,b,c,d)){
+                        return false;
                     }
+ 
             }
-        
         return true;
     }
     

@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotMultipleQuarterHourException extends RuntimeException{
 
     public NotMultipleQuarterHourException() {
+        //returns the exception
     }
 
     public NotMultipleQuarterHourException(String message) {

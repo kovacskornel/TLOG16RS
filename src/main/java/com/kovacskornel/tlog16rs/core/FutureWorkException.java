@@ -16,6 +16,7 @@ public class FutureWorkException extends RuntimeException{
     }
 
     public FutureWorkException() {
+        //returns the exception
     }
     
     

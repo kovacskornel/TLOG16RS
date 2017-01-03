@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotExpectedTimeOrderException extends RuntimeException {
 
     public NotExpectedTimeOrderException() {
+        //returns the exception
     }           
 
     public NotExpectedTimeOrderException(String string) {

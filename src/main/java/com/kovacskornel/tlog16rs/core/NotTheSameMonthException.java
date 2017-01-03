@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotTheSameMonthException extends RuntimeException{
 
     public NotTheSameMonthException() {
+        //returns the exception
     }
 
     public NotTheSameMonthException(String message) {

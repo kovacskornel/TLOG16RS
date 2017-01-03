@@ -49,12 +49,18 @@ public class WorkMonth {
     {
         int i;
         boolean a=false;
-        if(days.isEmpty()) return true;
+        if(days.isEmpty())
+        {
+            return true;
+        }
         for(i=0;i<days.size();i++)
         {
             int day1 = days.get(i).getActualDay().getDayOfMonth();
             int day2 = x.getActualDay().getDayOfMonth(); 
-            if(day1!=day2) a = true;
+            if(day1!=day2)
+            {
+                a = true;
+            }
         }
         return a;
     }
@@ -99,10 +105,10 @@ public class WorkMonth {
             if (isWeekendEnabled == true) {
             days.add(wd);
             }
-                else if((!wd.isWeekDay(wd.getActualDay())) && isWeekendEnabled == false){
+                else if((!wd.isWeekDay(wd.getActualDay()))){
                     throw new WeekendNotEnabledException();
                 }
-                else if(isWeekendEnabled == false && wd.isWeekDay(wd.getActualDay()))
+                else if(wd.isWeekDay(wd.getActualDay()))
                 {
                     days.add(wd);
                 }
@@ -225,7 +231,10 @@ public class WorkMonth {
      */
     public boolean isSameMonth(WorkDay wd)
     {
-        if(date == null) date = stringToYearMonth();
+        if(date == null)
+        {       
+        date = stringToYearMonth();
+        }
         return (wd.getActualDay().getMonth().equals(date.getMonth()) && wd.getActualDay().getYear() == date.getYear());
     }
     

@@ -28,7 +28,7 @@ public class TimeLoggerTest {
         Task t = new Task("7:30","10:30");
         wd.addTask(t);
         wm.addWorkDay(wd);
-        TimeLogger tl = new TimeLogger();
+        TimeLogger tl = new TimeLogger("a");
         tl.addMonth(wm);
         assertEquals(t.getMinPerTask(),tl.getMonths().get(0).getSumPerMonth());
     }
@@ -38,7 +38,7 @@ public class TimeLoggerTest {
     {
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 4));
         WorkMonth wm2 = new WorkMonth(YearMonth.of(2016, 4));
-        TimeLogger tl = new TimeLogger();
+        TimeLogger tl = new TimeLogger("a");
         tl.addMonth(wm);
         tl.addMonth(wm2);
     }
@@ -48,7 +48,7 @@ public class TimeLoggerTest {
     {
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 4));
         WorkMonth wm2 = new WorkMonth(YearMonth.of(2016, 9));
-        TimeLogger tl = new TimeLogger();
+        TimeLogger tl = new TimeLogger("a");
         tl.addMonth(wm);
         assertEquals(tl.isNewMonth(wm2),true);
     }
@@ -58,7 +58,7 @@ public class TimeLoggerTest {
     {
         WorkMonth wm = new WorkMonth(YearMonth.of(2016, 4));
         WorkMonth wm2 = new WorkMonth(YearMonth.of(2016, 4));
-        TimeLogger tl = new TimeLogger();
+        TimeLogger tl = new TimeLogger("a");
         tl.addMonth(wm);
         assertEquals(tl.isNewMonth(wm2),false);
     }

@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NotSeparatedTimesException extends RuntimeException{
 
     public NotSeparatedTimesException() {
+        //returns the exception
     }
 
     public NotSeparatedTimesException(String message) {

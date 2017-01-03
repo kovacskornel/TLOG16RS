@@ -93,7 +93,10 @@ public class Task{
         {
         x += (end_time.getHour()*60+end_time.getMinute())-(start_time.getHour()*60+start_time.getMinute());
         }
-        else if(end_time!=null && end_time.getHour()*60+end_time.getMinute() > start_time.getHour()*60+start_time.getMinute()) throw new NotExpectedTimeOrderException();
+        else if(end_time!=null && end_time.getHour()*60+end_time.getMinute() < start_time.getHour()*60+start_time.getMinute())
+        {
+            throw new NotExpectedTimeOrderException();
+        }
         return x;
         
     }
@@ -124,17 +127,20 @@ public class Task{
             etime = stringToLocalTime(end_time);
             stime = stringToLocalTime(start_time);
         }
-        else throw new EmptyTimeFieldException("Empty time field!");
+        else throw new EmptyTimeFieldException();
         if(stime.getHour()*60+stime.getMinute() < etime.getHour()*60+etime.getMinute())
         {
-            if(isMultipleQuarterHour(stime.getMinute()) && isMultipleQuarterHour(etime.getMinute()))
+            if(!isMultipleQuarterHour(stime.getMinute()) || !isMultipleQuarterHour(etime.getMinute()))
             {
+                throw new NotMultipleQuarterHourException();
+            }
                 setStartTime(start_time);
                 setEndTime(end_time);
-            }
         }
-        else if(stime == null || etime == null) throw new EmptyTimeFieldException("Empty time field!");
-        else if((stime.getHour()*60+stime.getMinute()) > (etime.getHour()*60+etime.getMinute())) throw new NotExpectedTimeOrderException();        
+        else if((stime.getHour()*60+stime.getMinute()) > (etime.getHour()*60+etime.getMinute()))
+        {
+            throw new NotExpectedTimeOrderException();
+        }        
     }
      
     public Task(LocalTime start_time, LocalTime end_time) {
@@ -143,8 +149,14 @@ public class Task{
                 setStartTime(start_time);
                 setEndTime(end_time);
         }
-        else if(start_time == null || end_time == null) throw new EmptyTimeFieldException("Empty time field!");
-        else if(start_time.getHour()*60+start_time.getMinute() > end_time.getHour()*60+end_time.getMinute()) throw new NotExpectedTimeOrderException();
+        else if(start_time == null || end_time == null)
+        {
+            throw new EmptyTimeFieldException("Empty time field!");
+        }
+        else if(start_time.getHour()*60+start_time.getMinute() > end_time.getHour()*60+end_time.getMinute())
+        {
+            throw new NotExpectedTimeOrderException();
+        }
     }
      
     public Task(String task_id, LocalTime start_time, LocalTime end_time, String comment) {
@@ -162,11 +174,18 @@ public class Task{
     }
 
     public Task(String task_id) {
-        if(task_id == null || "".equals(task_id) || task_id.isEmpty()) throw new NoTaskIDException();
+        if(task_id == null || "".equals(task_id) || task_id.isEmpty())
+        {
+            throw new NoTaskIDException();
+        }
         else if(isValidLTTaskId(task_id) || isValidRedmineTaskId(task_id) && !"".equals(task_id))
         {
             this.task_id = task_id;
-        }else if(!isValidRedmineTaskId(task_id) || !isValidRedmineTaskId(task_id)) throw new InvalidTaskIDException();
+        }
+        else if(!isValidRedmineTaskId(task_id) || !isValidLTTaskId(task_id))
+        {
+            throw new InvalidTaskIDException();
+        }
     }
 
     /**
@@ -189,8 +208,12 @@ public class Task{
      * @exception EmptyTimeFieldException if the user leaves the time field empty
      */
     public final void setStartTime(LocalTime start_time) {
-        if(start_time.getHour() !=0 || start_time.getMinute() != 0 && isMultipleQuarterHour(start_time.getMinute()))
+        if(start_time.getHour() !=0 || start_time.getMinute() != 0)
         {
+            if(!isMultipleQuarterHour(start_time.getMinute()))
+            {
+                throw new NotMultipleQuarterHourException();
+            }
             this.start_time = start_time;
         } else throw new EmptyTimeFieldException("Empty start time!");
     }
@@ -201,8 +224,12 @@ public class Task{
      */
     public final void setEndTime(LocalTime end_time) {
 
-        if(end_time.getHour() !=0 || end_time.getMinute() != 0 && isMultipleQuarterHour(end_time.getMinute()))
+        if(end_time.getHour() !=0 || end_time.getMinute() != 0)
         {
+            if(!isMultipleQuarterHour(end_time.getMinute()))
+            {
+                throw new NotMultipleQuarterHourException();
+            }
         this.end_time = end_time;
         } else throw new EmptyTimeFieldException("Empty end time!");
         if(start_time.getHour()*60+start_time.getMinute() > end_time.getHour()*60+end_time.getMinute())
@@ -242,8 +269,7 @@ public class Task{
      */
     public final boolean isMultipleQuarterHour(long min)
     {
-        if(min%15!=0) throw new NotMultipleQuarterHourException();
-        else return true;
+        return min%15 == 0;
     }
 }
 

@@ -12,6 +12,7 @@ package com.kovacskornel.tlog16rs.core;
 public class NegativeMinutesOfWorkException extends RuntimeException  {
 
     public NegativeMinutesOfWorkException() {
+        //returns the exception
     }
 
     public NegativeMinutesOfWorkException(String string) {
