@@ -20,10 +20,16 @@ import javax.persistence.OneToMany;
 public class TimeLogger{
     @Id @GeneratedValue
     private int id;
+    @lombok.Getter
+    private String name;
     
     @lombok.Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WorkMonth> months = new ArrayList();
+
+    public TimeLogger(String name) {
+        this.name = name;
+    }
     
     /**
      * Checks if the given working month exists
@@ -31,6 +37,8 @@ public class TimeLogger{
      * @return true if the WorkMonth already added to TimeLogger<br>false if it is a new WorkMonth
      */
 
+    
+    
     public boolean isNewMonth(WorkMonth wm) {
         boolean isnew = true;
         int i;

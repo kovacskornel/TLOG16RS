@@ -8,9 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -20,8 +18,23 @@ import javax.ws.rs.PUT;
 @Path("/timelogger")
 public class TLOG16RSResource {    
     
-    private TimeLogger tl = Ebean.find(TimeLogger.class).findUnique();
-       
+    static String myname = "Kornel";
+
+    private TimeLogger gettl(String name){
+        try{
+        for(TimeLogger til : Ebean.find(TimeLogger.class).findList())
+        {
+            if(til.getName() == myname) tl = til;
+        }
+        }catch(Exception e){
+            tl = new TimeLogger(name);
+            e.getMessage();
+        }
+        return tl;
+    }
+    
+    TimeLogger tl = gettl(myname);
+    
     @Path ("/workmonths")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -76,7 +89,8 @@ public class TLOG16RSResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void delAll()
     {
-        tl.getMonths().clear();
+        Ebean.delete(tl);
+        tl = new TimeLogger(myname);
         Ebean.save(tl);
     }
 

@@ -5,6 +5,7 @@
  */
 package com.kovacskornel.tlog16rs;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.EbeanServerFactory;
 import com.avaje.ebean.config.DataSourceConfig;
@@ -76,6 +77,4 @@ public class CreateDatabase {
         System.err.println("avaje-ebeanorm-agent not found in classpath - not dynamically loaded");
         }
     }
-    
-
 }
