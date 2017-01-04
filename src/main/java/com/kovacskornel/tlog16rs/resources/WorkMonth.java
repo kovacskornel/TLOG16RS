@@ -27,7 +27,7 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @lombok.Getter
-public class WorkMonth {
+public class WorkMonth{
     @Id @GeneratedValue
     int id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

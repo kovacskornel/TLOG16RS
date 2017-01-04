@@ -1,5 +1,0 @@
-projectKey=TLOG16RS
-serverUrl=http://localhost:9000
-dashboardUrl=http://localhost:9000/dashboard/index/TLOG16RS
-ceTaskId=AVlksmG90zJmhPezVF0Q
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AVlksmG90zJmhPezVF0Q

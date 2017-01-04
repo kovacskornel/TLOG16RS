@@ -31,9 +31,25 @@ public class WorkDay{
     @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<Task> tasks = new ArrayList<>();
     private long requiredMinPerDay=450;
-    private long extra_min_per_day;
+    private long extraMinPerDay;
     private LocalDate actualDay;
-    private long sumPerDay;
+    private long sumPerDay = getSumPerDay();
+    
+    public WorkDay(LocalDate date, long reqmin)
+    {
+       setActualDay(date);
+       if(reqmin < 0)
+       {
+           throw new NegativeMinutesOfWorkException();
+       }
+           else requiredMinPerDay = reqmin;
+    }
+    
+    public WorkDay(LocalDate date)
+    {
+       setActualDay(date);
+       requiredMinPerDay = 450;
+    }    
     
     /**
      * @return the extra minutes worked this day
@@ -117,22 +133,6 @@ public class WorkDay{
         return !((date.getDayOfWeek() == DayOfWeek.SATURDAY) || (date.getDayOfWeek() == DayOfWeek.SUNDAY));
     }
     
-    public WorkDay(LocalDate date, long reqmin)
-    {
-       setActualDay(date);
-       if(reqmin < 0)
-       {
-           throw new NegativeMinutesOfWorkException();
-       }
-           else requiredMinPerDay = reqmin;
-    }
-    
-    public WorkDay(LocalDate date)
-    {
-       setActualDay(date);
-       requiredMinPerDay = 450;
-    }
-    
     /**
      *
      * @return The finishing time of the WorkDay's last task
@@ -148,7 +148,8 @@ public class WorkDay{
     
     public boolean isAfterBefore(LocalTime a, LocalTime b, LocalTime c, LocalTime d)
     {
-        boolean after,before;
+        boolean after;
+        boolean before;
         after = (a.isBefore(c) && a.isBefore(d)) ||( a.isAfter(c) && a.isAfter(d));
         before = (b.isBefore(c) && b.isBefore(d)) || (b.isAfter(c) && b.isAfter(d));
         return (!after || !before) && (!c.equals(b) && !d.equals(a));
@@ -160,10 +161,13 @@ public class WorkDay{
      * @return true if it is separated from other task
      * <br> false if it is not
      */
-    public final boolean isSeparatedTime(Task t)
+    public boolean isSeparatedTime(Task t)
     {       
         int j;
-        LocalTime a,b,c,d;
+        LocalTime a;
+        LocalTime b;
+        LocalTime c;
+        LocalTime d;
         if(tasks.isEmpty())
         {
             return true;
