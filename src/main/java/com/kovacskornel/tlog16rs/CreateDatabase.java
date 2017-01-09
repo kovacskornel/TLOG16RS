@@ -18,11 +18,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import liquibase.Contexts;
+import liquibase.LabelExpression;
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import java.util.function.Supplier;
 
 
 /**
@@ -49,7 +49,7 @@ public class CreateDatabase {
                 SQLException |
                 ClassNotFoundException a)
         {
-            LOGGER.info((Supplier<String>) a);
+            LOGGER.info(a.getMessage());
         }
         agentLoader();
         dataSourceConfig = new DataSourceConfig();
@@ -71,11 +71,12 @@ public class CreateDatabase {
         ebeanServer = EbeanServerFactory.create(serverConfig);
     }
     
-    private void updateSchema(TLOG16RSConfiguration config) throws LiquibaseException, SQLException, ClassNotFoundException{
-		Class.forName(config.getDbDriver());
-        Liquibase liquibase;
-        liquibase = new Liquibase("migrations.xml",new ClassLoaderResourceAccessor(),new JdbcConnection(DriverManager.getConnection(config.getDbDriver(),config.getDbUsername(),config.getDbPassword())));
-		liquibase.update(new Contexts());
+private void updateSchema(TLOG16RSConfiguration config) throws ClassNotFoundException, LiquibaseException, SQLException {
+        Class.forName(config.getDbDriver());
+        Liquibase liquibase = new Liquibase("migrations.xml",
+                new ClassLoaderResourceAccessor(),
+                new JdbcConnection(DriverManager.getConnection(config.getDbUrl(), config.getDbUsername(), config.getDbPassword())));
+        liquibase.update(new Contexts(), new LabelExpression());
     }
     
     private void agentLoader() {

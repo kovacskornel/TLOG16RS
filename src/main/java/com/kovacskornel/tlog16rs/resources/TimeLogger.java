@@ -11,20 +11,24 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
 /**
  * TimeLogger is the class which contains the working months
+ *
  * @author Kovács Kornél
  * @version 0.1.0
  * @since 2016-11-03
  */
 @Entity
-public class TimeLogger{
+public class TimeLogger {
+
     private static final Logger LOGGER = Logger.getLogger(TimeLogger.class.getName());
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private int id;
     @lombok.Getter
     private final String name;
-    
+
     @lombok.Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private final List<WorkMonth> months = new ArrayList();
@@ -32,15 +36,14 @@ public class TimeLogger{
     public TimeLogger(String name) {
         this.name = name;
     }
-    
+
     /**
      * Checks if the given working month exists
+     *
      * @param wm Working month
-     * @return true if the WorkMonth already added to TimeLogger<br>false if it is a new WorkMonth
+     * @return true if the WorkMonth already added to TimeLogger<br>false if it
+     * is a new WorkMonth
      */
-
-    
-    
     public boolean isNewMonth(WorkMonth wm) {
         boolean isnew = true;
         int i;
@@ -52,25 +55,19 @@ public class TimeLogger{
         }
         return isnew;
     }
-    
 
-
-    
     /**
-     *Adds a month to the TimeLogger
+     * Adds a month to the TimeLogger
+     *
      * @param wm Working month
      * @exception NotNewMonthException if the month already exists
      */
     public void addMonth(WorkMonth wm) {
         if (isNewMonth(wm)) {
-            if (months.add(wm)) {
-                LOGGER.info("Successfully added a WorkMonth");
-            } else {   
-                LOGGER.info("Not added!");
-            }
+            months.add(wm);
         } else {
             throw new NotNewMonthException();
         }
     }
-    
+
 }

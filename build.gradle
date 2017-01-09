@@ -49,6 +49,17 @@ dependencies {
     compile group: 'org.liquibase', name: 'liquibase-core', version: '3.5.3'
 }
 
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'TimeLogger with text UI',
+        	'Implementation-Version': project.version,
+        	'Main-Class': 'TLOG16RSAppl'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 docker {
 	url = "unix:///var/run/docker.sock";
 }
@@ -68,13 +79,15 @@ task createDockerfile(type: Dockerfile) {
 
     	def appFolder = "/"
 
-		runCommand "apk update && apk add bash"
+		
+	runCommand "apk --update add curl tar bash wget openssl"
+	runCommand "wget --no-check-certificate https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize-linux-amd64-v0.2.0.tar.gz"
+	runCommand "tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz"
 	
-        addFile "distributions/${project.distTar.archiveName}", "/tmp"
-        runCommand "mv /tmp/${project.applicationName}-${project.version} /${project.applicationName}"
-
-    	workingDir  "${appFolder}"
-        defaultCommand  "/${project.applicationName}/bin/${project.applicationName}", "server", "${project.applicationName}/config.yml"
+	addFile "distributions/${project.distTar.archiveName}", "/tmp"
+	runCommand "mv /tmp/${project.applicationName}-${project.version} /${project.applicationName}"
+	workingDir  "${appFolder}"
+	defaultCommand  'bash', '-c', 'dockerize -wait ${DB_URL/jdbc:mariadb/tcp}' + " -template /${rootProject.name}/config.yml.template:/${rootProject.name}/config.yml /${project.applicationName}/bin/${project.applicationName}   server ${project.applicationName}/config.yml"
 }
 
 dockerBuildImage {
@@ -84,6 +97,6 @@ dockerBuildImage {
 }
 
 run {
- args 'server', 'src/main/resources/config.yml'
+ args 'server', 'src/dist/config.yml'
 }
 
