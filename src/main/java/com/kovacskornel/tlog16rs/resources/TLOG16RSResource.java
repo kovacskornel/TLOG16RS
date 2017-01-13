@@ -1,6 +1,9 @@
 package com.kovacskornel.tlog16rs.resources;
 
 import com.avaje.ebean.Ebean;
+import com.kovacskornel.tlog16rs.core.InvalidTaskIDException;
+import com.kovacskornel.tlog16rs.core.NoTaskIDException;
+import com.kovacskornel.tlog16rs.core.NotMultipleQuarterHourException;
 import java.lang.annotation.Annotation;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,8 +22,8 @@ import javax.ws.rs.core.Response;
 public class TLOG16RSResource {
 
     static String myname = "test";
-    private final TimeLogger tl = gettl();
-    
+    private TimeLogger tl = gettl();
+
     private TimeLogger gettl() {
         TimeLogger tilo = null;
         boolean ok = false;
@@ -56,7 +59,7 @@ public class TLOG16RSResource {
         return wm;
     }
 
-    private WorkDay createDayIfNotExists(int year, int month, int day) {
+    private WorkDay createDayIfNotExists(int year, int month, int day, long req) {
         WorkMonth mywm = createMonthIfNotExists(year, month);
         WorkDay mywd = null;
         if (!mywm.getDays().isEmpty()) {
@@ -69,7 +72,7 @@ public class TLOG16RSResource {
             }
         }
         if (mywd == null) {
-            mywd = new WorkDay(LocalDate.of(year, month, day));
+            mywd = new WorkDay(LocalDate.of(year, month, day),req);
             mywm.addWorkDay(mywd);
             Ebean.save(tl);
         }
@@ -98,10 +101,7 @@ public class TLOG16RSResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatistics() {
-        return Response.ok(tl.getMonths()) //200
-			.header("Access-Control-Allow-Origin", "*")
-			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-			.allow("OPTIONS").build();
+        return Response.ok(tl.getMonths()).build();
     }
 
     /**
@@ -114,13 +114,17 @@ public class TLOG16RSResource {
     @Path("/workmonths")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public WorkMonth addNewMonth(WorkMonthRB month) {
-        WorkMonth workMonth = new WorkMonth(month.getYear(), month.getMonth());
-        tl.addMonth(workMonth);
-        Ebean.save(tl);
-        return workMonth;
+    public Response addNewMonth(WorkMonthRB month) {
+        try {
+            WorkMonth workMonth = new WorkMonth(month.getYear(), month.getMonth());
+            tl.addMonth(workMonth);
+            Ebean.save(tl);
+            return Response.ok(workMonth).build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
     }
-
 
     @Path("/workmonths/{year}/{month}")
     @GET
@@ -129,10 +133,6 @@ public class TLOG16RSResource {
         WorkMonth mywm;
         mywm = createMonthIfNotExists(year, month);
         return Response.ok(mywm.getDays()).build();
-        /*) //200
-			.header("Access-Control-Allow-Origin", "*")
-			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-			.allow("OPTIONS").*/
     }
 
     @PUT
@@ -144,81 +144,103 @@ public class TLOG16RSResource {
             Ebean.delete(TimeLogger.class, i);
             i++;
         }
+        tl = new TimeLogger(myname);
+        Ebean.save(tl);
     }
 
     @POST
     @Path("/workmonths/workdays")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addNewDay(WorkDayRB day) {
-        WorkMonth mywm;
-        mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
-        WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
-        mywm.addWorkDay(wd);
-        Ebean.save(tl);
-        String result = "Workday Created: " + day;
-        return Response.status(201).entity(result).build();
+        try {
+            createDayIfNotExists(day.getYear(), day.getMonth(), day.getDay(),day.getRequiredHours());
+            return Response.status(200).build();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
     }
-    
-        @POST
+
+    @POST
     @Path("/workmonths/workdays/weekend")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addNewWeekendDay(WorkDayRB day) {
-        WorkMonth mywm;
-        mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
-        WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
-        mywm.addWorkDay(wd,true);
-        Ebean.save(tl);
-        String result = "Workday Created: " + day;
-        return Response.status(201).entity(result).build();
+        try {
+            WorkMonth mywm;
+            mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
+            WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
+            mywm.addWorkDay(wd, true);
+            Ebean.save(tl);
+            return Response.ok(day).build();
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
     }
 
     @Path("/workmonths/{year}/{month}/{day}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response dayData(@PathParam(value = "year") int year, @PathParam(value = "month") int month, @PathParam(value = "day") int day) {
-        WorkDay mywd = createDayIfNotExists(year, month, day);
-        return Response.ok(mywd.getTasks()) //200
-			.header("Access-Control-Allow-Origin", "*")
-			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-			.allow("OPTIONS").build();
+        WorkDay mywd = createDayIfNotExists(year, month, day,450);
+        return Response.ok(mywd.getTasks()).build();
     }
 
     @POST
     @Path("/workmonths/workdays/tasks/start")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Task startTask(StartTaskRB task) {
-        WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());
-        Task myTask = new Task(task.getTaskId(), task.getStartTime(), task.getComment());
-        mywd.addTask(myTask);
-        Ebean.save(tl);
-        return myTask;
+    public Response startTask(StartTaskRB task) {
+        try {
+            WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay(),450);
+            Task myTask = new Task(task.getTaskId(), task.getStartTime(), task.getComment());
+            mywd.addTask(myTask);
+            Ebean.save(tl);
+            return Response.ok(myTask).build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
+
     }
 
     @PUT
     @Path("/workmonths/workdays/tasks/finish")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Task finishTask(FinishTaskRB task) {
-        WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());
-        Task myTask = createTaskIfNotExists(mywd, task.getTaskId(), task.getStartTime(), task.getComment());
-        myTask.setEndTime(task.getEndTime());
-        Ebean.save(tl);
-        return myTask;
+    public Response finishTask(FinishTaskRB task) {
+        try {
+            WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay(),450);
+            Task myTask = createTaskIfNotExists(mywd, task.getTaskId(), task.getStartTime(), task.getComment());
+            myTask.setEndTime(task.getEndTime());
+            Ebean.save(tl);
+            return Response.ok(myTask).build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
     }
 
     @PUT
     @Path("/workmonths/workdays/tasks/modify")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Task modifyTask(ModifyTaskRB task) {
-        WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay());
-        Task myTask = createTaskIfNotExists(mywd, task.getTaskId(), task.getStartTime(), task.getNewComment());
-        myTask.setEndTime(task.getNewEndTime());
-        myTask.setStartTime(task.getNewStartTime());
-        myTask.setTaskId(task.getNewTaskId());
-        Ebean.save(tl);
-        return myTask;
+    public Response modifyTask(ModifyTaskRB task) {
+        try {
+            WorkDay mywd = createDayIfNotExists(task.getYear(), task.getMonth(), task.getDay(),450);
+            Task myTask = createTaskIfNotExists(mywd, task.getTaskId(), task.getStartTime(), task.getNewComment());
+            myTask.setEndTime(task.getNewEndTime());
+            myTask.setStartTime(task.getNewStartTime());
+            myTask.setTaskId(task.getNewTaskId());
+            Ebean.save(tl);
+            return Response.ok(myTask).build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
+        }
+
     }
 
     private WorkMonth isMonthExists(int year, int month) {
@@ -251,28 +273,33 @@ public class TLOG16RSResource {
     @Path("/workmonths/workdays/tasks/delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Task deleteTask(DeleteTaskRB task) {
-        Task delTask = null;
-        WorkMonth mywm = isMonthExists(task.getYear(), task.getMonth());
-        if (mywm == null) {
-            return delTask;
-        }
-        WorkDay mywd = isDayExists(mywm, task.getDay());
-        if (mywd == null) {
-            return delTask;
-        }
-        if (mywd.getTasks().isEmpty()) {
-            int t;
-            for (t = 0; t < mywd.getTasks().size(); t++) {
+    public Response deleteTask(DeleteTaskRB task) {
+        try {
+            Task delTask = null;
+            WorkMonth mywm = isMonthExists(task.getYear(), task.getMonth());
+            if (mywm == null) {
+                Response.ok(delTask).build();
+            }
+            WorkDay mywd = isDayExists(mywm, task.getDay());
+            if (mywd == null) {
+                Response.ok(delTask).build();
+            }
+            if (mywd.getTasks().isEmpty()) {
+                int t;
+                for (t = 0; t < mywd.getTasks().size(); t++) {
 
-                if (mywd.getTasks().get(t).getTaskId().equals(task.getTaskId()) && mywd.getTasks().get(t).getStartTime() == mywd.getTasks().get(t).stringToLocalTime(task.getStartTime())) {
-                    delTask = mywd.getTasks().get(t);
+                    if (mywd.getTasks().get(t).getTaskId().equals(task.getTaskId()) && mywd.getTasks().get(t).getStartTime() == mywd.getTasks().get(t).stringToLocalTime(task.getStartTime())) {
+                        delTask = mywd.getTasks().get(t);
+                    }
                 }
             }
+            mywd.getTasks().remove(delTask);
+            Ebean.delete(delTask);
+            return Response.ok(delTask).build();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Response.status(400).build();
         }
-        mywd.getTasks().remove(delTask);
-        Ebean.delete(delTask);
-        return delTask;
     }
 
 }
