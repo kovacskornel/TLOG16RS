@@ -1,6 +1,7 @@
 package com.kovacskornel.tlog16rs.resources;
 
 import com.avaje.ebean.Ebean;
+import java.lang.annotation.Annotation;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -9,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 
 import java.time.LocalDate;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -97,8 +97,11 @@ public class TLOG16RSResource {
     @Path("/workmonths")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List getStatistics() {
-        return tl.getMonths();
+    public Response getStatistics() {
+        return Response.ok(tl.getMonths()) //200
+			.header("Access-Control-Allow-Origin", "*")
+			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+			.allow("OPTIONS").build();
     }
 
     /**
@@ -126,6 +129,10 @@ public class TLOG16RSResource {
         WorkMonth mywm;
         mywm = createMonthIfNotExists(year, month);
         return Response.ok(mywm.getDays()).build();
+        /*) //200
+			.header("Access-Control-Allow-Origin", "*")
+			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+			.allow("OPTIONS").*/
     }
 
     @PUT
@@ -142,22 +149,25 @@ public class TLOG16RSResource {
     @POST
     @Path("/workmonths/workdays")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public WorkDay addNewDay(WorkDayRB day) {
+    public Response addNewDay(WorkDayRB day) {
         WorkMonth mywm;
         mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
         WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
         mywm.addWorkDay(wd);
         Ebean.save(tl);
-        return wd;
+        String result = "Workday Created: " + day;
+        return Response.status(201).entity(result).build();
     }
 
     @Path("/workmonths/{year}/{month}/{day}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List dayData(@PathParam(value = "year") int year, @PathParam(value = "month") int month, @PathParam(value = "day") int day) {
+    public Response dayData(@PathParam(value = "year") int year, @PathParam(value = "month") int month, @PathParam(value = "day") int day) {
         WorkDay mywd = createDayIfNotExists(year, month, day);
-        return mywd.getTasks();
+        return Response.ok(mywd.getTasks()) //200
+			.header("Access-Control-Allow-Origin", "*")
+			.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+			.allow("OPTIONS").build();
     }
 
     @POST
