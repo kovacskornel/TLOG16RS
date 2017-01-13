@@ -158,6 +158,19 @@ public class TLOG16RSResource {
         String result = "Workday Created: " + day;
         return Response.status(201).entity(result).build();
     }
+    
+        @POST
+    @Path("/workmonths/workdays/weekend")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addNewWeekendDay(WorkDayRB day) {
+        WorkMonth mywm;
+        mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
+        WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
+        mywm.addWorkDay(wd,true);
+        Ebean.save(tl);
+        String result = "Workday Created: " + day;
+        return Response.status(201).entity(result).build();
+    }
 
     @Path("/workmonths/{year}/{month}/{day}")
     @GET
