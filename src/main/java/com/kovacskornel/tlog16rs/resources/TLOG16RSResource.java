@@ -156,6 +156,7 @@ public class TLOG16RSResource {
     @POST
     @Path("/workmonths/workdays")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addNewDay(WorkDayRB day) {
         try {
             createDayIfNotExists(day.getYear(), day.getMonth(), day.getDay(),day.getRequiredHours());
@@ -170,13 +171,17 @@ public class TLOG16RSResource {
     @POST
     @Path("/workmonths/workdays/weekend")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addNewWeekendDay(WorkDayRB day) {
         try {
             WorkMonth mywm;
             mywm = createMonthIfNotExists(day.getYear(), day.getMonth());
-            WorkDay wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
+            WorkDay wd = isDayExists(mywm, day.getDay());
+            if(wd == null)
+                wd = new WorkDay(LocalDate.of(day.getYear(), day.getMonth(), day.getDay()), day.getRequiredHours());
             mywm.addWorkDay(wd, true);
             Ebean.save(tl);
+            System.out.println("GOOD");
             return Response.ok(day).build();
 
         } catch (Exception e) {
