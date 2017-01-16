@@ -86,14 +86,19 @@ public class TLOG16RSResource {
             for (t = 0; t < mywd.getTasks().size(); t++) {
                 if (mywd.getTasks().get(t).getTaskId().equals(taskid) && mywd.getTasks().get(t).getStartTime() == mywd.getTasks().get(t).stringToLocalTime(stime)) {
                     myTask = mywd.getTasks().get(t);
+                    myTask.setTaskId(taskid);
+                    myTask.setStartTime(stime);
+                    if(comment != null)
+                    myTask.setComment(comment);
                 }
             }
         }
         if (myTask == null) {
             myTask = new Task(taskid, stime, comment);
             mywd.addTask(myTask);
-            Ebean.save(tl);
+            
         }
+        Ebean.save(tl);
         return myTask;
     }
 
@@ -278,23 +283,30 @@ public class TLOG16RSResource {
             Task delTask = null;
             WorkMonth mywm = isMonthExists(task.getYear(), task.getMonth());
             if (mywm == null) {
-                Response.ok(delTask).build();
+                System.out.println("Month not found!");
+                return Response.ok(delTask).build();
+                
             }
             WorkDay mywd = isDayExists(mywm, task.getDay());
             if (mywd == null) {
-                Response.ok(delTask).build();
+                System.out.println("Day not found!");
+                return Response.ok(delTask).build();
+                
             }
-            if (mywd.getTasks().isEmpty()) {
+            if (!mywd.getTasks().isEmpty()) {
                 int t;
                 for (t = 0; t < mywd.getTasks().size(); t++) {
 
                     if (mywd.getTasks().get(t).getTaskId().equals(task.getTaskId()) && mywd.getTasks().get(t).getStartTime() == mywd.getTasks().get(t).stringToLocalTime(task.getStartTime())) {
+                        System.out.println("Task found!");
                         delTask = mywd.getTasks().get(t);
+                        System.out.println("Task " + delTask.getTaskId() + " deleted!");
                     }
                 }
             }
-            mywd.getTasks().remove(delTask);
+            else return Response.ok(delTask).build();
             Ebean.delete(delTask);
+            mywd.getTasks().remove(delTask);
             return Response.ok(delTask).build();
         } catch (Exception e) {
             System.err.println(e.getMessage());
