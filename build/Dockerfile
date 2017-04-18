@@ -1,5 +1,5 @@
 FROM frolvlad/alpine-oraclejdk8:slim
-MAINTAINER Kovacs Kornel "kkovacs@precognox.com"
+MAINTAINER Andras Gazdag "agazdag@precognox.com"
 RUN apk --update add curl tar bash wget openssl
 RUN wget --no-check-certificate https://github.com/jwilder/dockerize/releases/download/v0.2.0/dockerize-linux-amd64-v0.2.0.tar.gz
 RUN tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.2.0.tar.gz
