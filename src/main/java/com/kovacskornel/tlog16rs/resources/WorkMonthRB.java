@@ -7,7 +7,7 @@ package com.kovacskornel.tlog16rs.resources;
 
 /**
  *
- * @author precognox
+ * @author Kovacs Kornel
  */
 @lombok.Getter
 @lombok.Setter

@@ -29,8 +29,7 @@ public class TLOG16RSApplication extends Application<TLOG16RSConfiguration> {
         CreateDatabase database = new CreateDatabase(configuration);
         final EbeanServer ebeanServer;
         ebeanServer = database.getEbeanServer();
-        database.setEbeanServer(ebeanServer);
-        environment.jersey().register(new TLOG16RSResource());
+        environment.jersey().register(new TLOG16RSResource(configuration));
 
     }
 

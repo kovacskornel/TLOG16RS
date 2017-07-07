@@ -13,28 +13,37 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 /**
- * TimeLogger is the class which contains the working months
+ * TimeLogger = User
  *
  * @author Kovács Kornél
- * @version 0.1.0
  * @since 2016-11-03
  */
 @Entity
+@lombok.Getter
+@lombok.Setter
 public class TimeLogger {
 
     private static final Logger LOGGER = Logger.getLogger(TimeLogger.class.getName());
     @Id
     @GeneratedValue
     private int id;
-    @lombok.Getter
     private final String name;
-
-    @lombok.Getter
+    private String password;
+    private String salt;
+    
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private final List<WorkMonth> months = new ArrayList();
+    private List<WorkMonth> months = new ArrayList();
 
+    
+    /**
+     * Creates a TimeLogger element
+     * @param name The user's name whose the TimeLogger is 
+     */
     public TimeLogger(String name) {
+        months = new ArrayList();
         this.name = name;
+        this.password = "";
+        this.salt = "";       
     }
 
     /**
@@ -45,15 +54,15 @@ public class TimeLogger {
      * is a new WorkMonth
      */
     public boolean isNewMonth(WorkMonth wm) {
-        boolean isnew = true;
+        boolean isItNewMonth = true;
         int i;
         for (i = 0; i < months.size(); i++) {
             if (months.get(i).getDate().equals(wm.getDate())) {
-                isnew = false;
+                isItNewMonth = false;
                 break;
             }
         }
-        return isnew;
+        return isItNewMonth;
     }
 
     /**

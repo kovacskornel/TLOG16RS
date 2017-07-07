@@ -53,5 +53,10 @@ create index ix_work_month_time_logger_id on work_month (time_logger_id);
 		<column name="name" type="varchar(255)"></column>
 	</addColumn>
 </changeSet>
-
+    <changeSet id="3" author="anyone">
+        <addColumn tableName="time_logger">
+            <column name="password" type="varchar(255)"></column>
+            <column name="salt" type="varchar(255)"></column>
+        </addColumn>
+</changeSet>
 </databaseChangeLog>

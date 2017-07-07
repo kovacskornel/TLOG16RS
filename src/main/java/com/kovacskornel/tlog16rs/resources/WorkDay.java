@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
  * It contains the data of the workday and methods for {@link Task}s
  *
  * @author Kovács Kornél
- * @version 0.1.0
  * @since 2016-11-03
  */
 @Entity

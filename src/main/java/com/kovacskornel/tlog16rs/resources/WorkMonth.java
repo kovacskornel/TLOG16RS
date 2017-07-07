@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
  * This class contains methods and variables to work with WorkDays
  *
  * @author Kovács Kornél
- * @version 0.1.0
  * @since 2016-11-03
  */
 @Entity

@@ -5,9 +5,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group name="akalman-LT">
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/UserRB.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/JwtService.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkMonth.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/ModifyTaskRB.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TimeLogger.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkDay.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/core/EmptyTimeFieldException.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/WorkDayRB.java</file>
         <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TLOG16RSResource.java</file>
+        <file>file:/home/precognox/TLOG16RS/build.gradle</file>
       </group>
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+      <group name="akalman-LT">
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/JwtService.java</file>
+        <file>file:/home/precognox/TLOG16RS/src/main/java/com/kovacskornel/tlog16rs/resources/TLOG16RSResource.java</file>
+      </group>
+    </open-files>
   </auxiliary>
 </gradle-project-properties>

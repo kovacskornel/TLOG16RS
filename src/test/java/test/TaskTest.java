@@ -24,7 +24,7 @@ public class TaskTest {
     
     private Task WrongTimeOrder()
     {
-     return new Task("08:45", "07:30");
+     return new Task("1234", "08:45", "07:30", "asd");
     }
     
     private Task NoEndTime()

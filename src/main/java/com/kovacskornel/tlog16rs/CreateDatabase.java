@@ -17,6 +17,7 @@ import org.avaje.agentloader.AgentLoader;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -30,14 +31,15 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  * @author precognox
  */
 
-@lombok.Getter
-@lombok.Setter
+
 public class CreateDatabase {
 
     private static final Logger LOGGER = Logger.getLogger(CreateDatabase.class.getName());
     private final DataSourceConfig dataSourceConfig;
 	private final ServerConfig serverConfig;
-    private EbeanServer ebeanServer;
+    @Inject
+    @lombok.Getter
+    private final EbeanServer ebeanServer;
     
     public CreateDatabase(TLOG16RSConfiguration config)
     {
@@ -83,5 +85,8 @@ private void updateSchema(TLOG16RSConfiguration config) throws ClassNotFoundExce
         if (!AgentLoader.loadAgentFromClasspath("avaje-ebeanorm-agent", "debug=1;packages=com.kovacskornel.tlog16rs.**")) {
         LOGGER.info("avaje-ebeanorm-agent not found in classpath - not dynamically loaded");
         }
+    
+    
+        
    }
 }

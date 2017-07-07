@@ -18,7 +18,7 @@ import javax.persistence.Id;
 
 /**
  *
- * @author precognox
+ * @author Kovacs Kornel
  */
 @Entity
 @lombok.Getter
@@ -86,16 +86,38 @@ public class Task {
     }
 
     public Task(String taskId, LocalTime startTime, LocalTime endTime, String comment) {
-        this.taskId = taskId;
-        setStartTime(startTime);
-        setEndTime(endTime);
+        if (isValidLTTaskId(taskId) || isValidRedmineTaskId(taskId)) {
+            this.taskId = taskId;
+        } else {
+            throw new InvalidTaskIDException("Invalid task ID!");
+        }
+        if (startTime != null && endTime != null && startTime.getHour() * 60 + startTime.getMinute() < endTime.getHour() * 60 + endTime.getMinute()) {
+            setStartTime(startTime);
+            setEndTime(endTime);
+        } else if (startTime == null || endTime == null) {
+            throw new EmptyTimeFieldException("Empty time field!");
+        } else if (startTime.getHour() * 60 + startTime.getMinute() > endTime.getHour() * 60 + endTime.getMinute()) {
+            throw new NotExpectedTimeOrderException();
+        }
         this.comment = comment;
     }
 
-    public Task(String taskId, String startTime, String endTime, String comment) {
-        this.taskId = taskId;
-        setStartTime(stringToLocalTime(startTime));
-        setEndTime(stringToLocalTime(endTime));
+    public Task(String taskId, String stringStartTime, String stringEndTime, String comment) {
+        LocalTime startingTime = stringToLocalTime(stringStartTime);
+        LocalTime endingTime = stringToLocalTime(stringEndTime);
+        if (isValidLTTaskId(taskId) || isValidRedmineTaskId(taskId)) {
+            this.taskId = taskId;
+        } else {
+            throw new InvalidTaskIDException("Invalid task ID!");
+        }
+        if (startingTime != null && endingTime != null && startingTime.getHour() * 60 + startingTime.getMinute() < endingTime.getHour() * 60 + endingTime.getMinute()) {
+            setStartTime(startingTime);
+            setEndTime(endingTime);
+        } else if (startingTime == null || endingTime == null) {
+            throw new EmptyTimeFieldException("Empty time field!");
+        } else if (startingTime.getHour() * 60 + startingTime.getMinute() > endingTime.getHour() * 60 + endingTime.getMinute()) {
+            throw new NotExpectedTimeOrderException();
+        }
         this.comment = comment;
     }
 
