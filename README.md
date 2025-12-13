@@ -31,7 +31,7 @@ TLOG16RS is a time logging application that allows users to track their work hou
 ## Prerequisites
 
 - Java 8 or higher
-- Gradle 4.x
+- Gradle (tested with Gradle 4.x and later)
 - MariaDB database
 - Docker (optional, for containerized deployment)
 
@@ -52,10 +52,12 @@ Update the configuration file `src/dist/config.yml` with your database settings:
 ```yaml
 dbDriver: org.mariadb.jdbc.Driver
 dbUrl: jdbc:mariadb://127.0.0.1:9005/timelogger
-dbUsername: timelogger
-dbPassword: 633Ym2aZ5b9Wtzh4EJc4pANx
+dbUsername: your_database_username
+dbPassword: your_database_password
 dbName: timelogger
 ```
+
+**Note**: Never commit sensitive credentials to version control. Use environment variables or secure configuration management in production.
 
 ### Building the Application
 
