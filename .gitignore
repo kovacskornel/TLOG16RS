@@ -15,4 +15,31 @@ dependency-reduced-pom.xml
 buildNumber.properties
 
 .mvn/timing.properties
-/build/
+
+# Gradle
+.gradle/
+build/
+out/
+*.class
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.nb-gradle/
+.nb-gradle-properties
+nbproject/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*~
